@@ -1,0 +1,6 @@
+@use "mixins" as m;
+
+.root {
+  @include m.status-note;
+  max-width: 38ch;
+}

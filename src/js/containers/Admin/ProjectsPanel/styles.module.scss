@@ -1,0 +1,69 @@
+@use "mixins" as m;
+
+@mixin body-text {
+  color: var(--muted);
+  font-size: 15px;
+  white-space: pre-wrap;
+}
+
+.num {
+  @include m.num;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--gap-md);
+  align-items: start;
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+
+  &:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  @media (max-width: 620px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rowMain {
+  .row[data-hidden="true"] & {
+    opacity: 0.5;
+  }
+
+  h3 {
+    font-size: 17px;
+  }
+}
+
+.rowTitle {
+  @include m.row;
+  gap: 10px;
+}
+
+.rowKind {
+  @include m.meta;
+}
+
+.rowDescription {
+  @include body-text;
+  margin: 6px 0 8px;
+}
+
+.rowMeta {
+  @include m.meta;
+  margin: 0;
+}
+
+.rowActions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+
+  @media (max-width: 620px) {
+    justify-content: flex-start;
+  }
+}

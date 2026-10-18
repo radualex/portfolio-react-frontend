@@ -1,0 +1,62 @@
+@use "mixins" as m;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition:
+    border-color 0.15s var(--ease),
+    background 0.15s var(--ease);
+
+  &:hover {
+    border-color: var(--fg-line);
+    background: color-mix(in oklch, var(--surface) 88%, white);
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+}
+
+.top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.kind {
+  @include m.meta;
+}
+
+.foot {
+  /* margin-top:auto pins the footer down so cards in a row align their links despite different description lengths. */
+  margin-top: auto;
+  padding-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stack {
+  @include m.meta;
+}
+
+.link {
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--fg-line);
+  padding-bottom: 1px;
+  transition: border-color 0.15s var(--ease);
+
+  &:hover {
+    border-bottom-color: var(--fg);
+  }
+}

@@ -1,0 +1,22 @@
+@use "mixins" as m;
+
+.num {
+  @include m.num;
+}
+
+.previewBox {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  background: var(--bg);
+}
+
+.previewLabel {
+  @include m.meta;
+  margin: 0 0 14px;
+}
+
+.previewNote {
+  margin-top: 12px;
+  max-width: 42ch;
+}

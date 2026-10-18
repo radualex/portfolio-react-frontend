@@ -1,0 +1,12 @@
+@use "mixins" as m;
+
+.root {
+  @include m.row;
+  margin-top: 28px;
+  gap: var(--gap-md);
+}
+
+.actionsNote {
+  @include m.meta;
+  margin: 0;
+}

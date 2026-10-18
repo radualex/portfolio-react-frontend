@@ -1,0 +1,54 @@
+@use "mixins" as m;
+
+.heroSplit {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(32px, 6vw, 80px);
+  align-items: center;
+
+  @media (max-width: 920px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.heroHeading {
+  margin-block: 4px 22px;
+}
+
+.heroCta {
+  display: flex;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+.portrait {
+  max-width: 380px;
+  width: 100%;
+  justify-self: end;
+  margin: 0;
+
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+  }
+
+  figcaption {
+    @include m.meta;
+    margin-top: 12px;
+    text-align: right;
+  }
+
+  /* Above the copy on narrow screens: a face beats a headline wrapped to four lines. */
+  @media (max-width: 920px) {
+    justify-self: start;
+    max-width: 260px;
+    order: -1;
+
+    figcaption {
+      text-align: left;
+    }
+  }
+}

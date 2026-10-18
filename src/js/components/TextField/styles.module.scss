@@ -1,0 +1,71 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+}
+
+.optional {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  opacity: 0.7;
+  margin-left: 6px;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* --fg-line, not --border: an input edge is non-text, so WCAG 1.4.11 wants 3:1. */
+.control {
+  width: 100%;
+  padding: 12px 14px;
+  min-height: 44px;
+  border: 1px solid var(--fg-line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+  font-size: 15px;
+  transition:
+    border-color 0.15s var(--ease),
+    background 0.15s var(--ease);
+
+  &::placeholder {
+    color: var(--muted);
+  }
+
+  &:hover {
+    background: color-mix(in oklch, var(--surface) 88%, white);
+  }
+
+  &:focus-visible {
+    border-color: var(--accent);
+    outline: 2px solid var(--accent-soft);
+    outline-offset: 0;
+  }
+
+  .root[data-invalid="true"] & {
+    border-color: var(--accent);
+  }
+}
+
+.error {
+  font-size: 13px;
+  color: var(--accent);
+  margin: 0;
+  min-height: 0;
+}
+
+.full {
+  grid-column: 1 / -1;
+}

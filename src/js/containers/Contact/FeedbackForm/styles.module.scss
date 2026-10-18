@@ -1,0 +1,9 @@
+@use "mixins" as m;
+
+.feedbackStack {
+  @include m.stack;
+}
+
+.feedbackSubmit {
+  margin-top: 22px;
+}

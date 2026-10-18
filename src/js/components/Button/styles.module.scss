@@ -1,0 +1,93 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 11px 22px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  transition:
+    transform 0.05s var(--ease),
+    background 0.15s var(--ease),
+    border-color 0.15s var(--ease);
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+/* Dark text on orange, never white: white-on-accent is 2.97:1 and fails WCAG 1.4.3; this pairing is 6.54:1. */
+.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+
+  &:hover:not([disabled]) {
+    background: color-mix(in oklch, var(--accent) 86%, white);
+    border-color: color-mix(in oklch, var(--accent) 86%, white);
+  }
+}
+
+.secondary {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--fg-line);
+
+  &:hover:not([disabled]) {
+    background: var(--fg-soft);
+    border-color: var(--fg);
+  }
+}
+
+.ghost {
+  background: transparent;
+  color: var(--fg);
+  border-color: transparent;
+  padding-inline: 12px;
+
+  &:hover:not([disabled]) {
+    background: var(--fg-soft);
+  }
+}
+
+/* Destructive actions borrow the accent on hover only — a permanently red button in every admin row would eat the accent budget. */
+.danger {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--fg-line);
+
+  &:hover:not([disabled]) {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+}
+
+.sm {
+  min-height: 34px;
+  padding: 6px 13px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.arrow::after {
+  content: "→";
+  transition: transform 0.15s var(--ease);
+}
+
+.arrow:hover::after {
+  transform: translateX(3px);
+}
+
+.block {
+  width: 100%;
+}

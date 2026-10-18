@@ -1,0 +1,32 @@
+@use "mixins" as m;
+
+.root {
+  padding-block: var(--gap-xl);
+  color: var(--muted);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+
+  a {
+    border-bottom: 1px solid var(--border);
+    transition: border-color 0.15s var(--ease);
+
+    &:hover {
+      border-bottom-color: var(--fg);
+    }
+  }
+}
+
+.inner {
+  @include m.container;
+  @include m.row-between;
+  flex-wrap: wrap;
+  gap: var(--gap-md);
+}
+
+.links {
+  @include m.meta;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}

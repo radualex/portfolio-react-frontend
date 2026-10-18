@@ -1,0 +1,9 @@
+@use "mixins" as m;
+
+.root {
+  @include m.section-head;
+
+  h2 + p {
+    margin-top: 14px;
+  }
+}

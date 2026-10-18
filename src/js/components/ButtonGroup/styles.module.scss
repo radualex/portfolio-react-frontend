@@ -1,0 +1,63 @@
+@use "mixins" as m;
+
+/* The prototype had .segmented and .tabs, which differed only in typography and whether a count was shown. */
+.root {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+
+  button {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 999px;
+    transition:
+      background 0.15s var(--ease),
+      color 0.15s var(--ease);
+
+    &:hover {
+      background: var(--fg-soft);
+      color: var(--fg);
+    }
+
+    /* Inverted fill rather than an accent fill: these sit inside panels that already carry the admin accent in the bar above. */
+    &[aria-pressed="true"] {
+      background: var(--fg);
+      color: var(--bg);
+    }
+  }
+}
+
+.segmented {
+  button {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 9px 18px;
+    min-height: 38px;
+  }
+}
+
+.tabs {
+  flex-wrap: wrap;
+
+  button {
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 36px;
+    padding: 7px 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+}
+
+.count {
+  @include m.num;
+  font-size: 11px;
+  opacity: 0.75;
+}

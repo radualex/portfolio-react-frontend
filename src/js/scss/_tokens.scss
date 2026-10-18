@@ -1,0 +1,50 @@
+/* ───────────────────────────────────────────────────────────────────────
+   Radu Stoica — freelance portfolio
+   Tokens extracted from portfolio-react-frontend/public/main.css.
+   See brand-spec.md. Raw colour literals live in :root and nowhere else.
+
+   This layer stays global rather than becoming a module: CSS Modules hash
+   class names, and custom properties have to be declared on a real :root.
+   ─────────────────────────────────────────────────────────────────── */
+
+:root {
+  --bg: oklch(0.161 0.006 56);
+  --surface: oklch(0.212 0.007 56);
+  --fg: oklch(0.961 0.004 85);
+  --muted: oklch(0.681 0.008 70);
+  --border: oklch(0.302 0.008 60);
+  --accent: oklch(0.693 0.191 37);
+  --live: oklch(0.78 0.16 152);
+
+  /* derived */
+  --accent-soft: color-mix(in oklch, var(--accent) 16%, transparent);
+  --live-soft: color-mix(in oklch, var(--live) 14%, transparent);
+  --fg-soft: color-mix(in oklch, var(--fg) 7%, transparent);
+  /* 38%, not 20%: every --fg-line use is an input border, a button edge or a
+     link underline — WCAG 1.4.11 wants 3:1 for those. 20% measured 1.8:1. */
+  --fg-line: color-mix(in oklch, var(--fg) 38%, transparent);
+
+  --font-display: "Iowan Old Style", "Charter", "Palatino Linotype", Georgia, serif;
+  --font-body: "Helvetica Neue", Helvetica, "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+  --fs-h1: clamp(40px, 5.4vw, 72px);
+  --fs-h2: clamp(28px, 3.6vw, 44px);
+  --fs-h3: 20px;
+  --fs-lead: 18px;
+  --fs-body: 16px;
+  --fs-meta: 13px;
+
+  --gap-sm: 12px;
+  --gap-md: 20px;
+  --gap-lg: 32px;
+  --gap-xl: 56px;
+  --gap-2xl: 96px;
+  --container: 1120px;
+  --gutter: clamp(20px, 5vw, 40px);
+
+  --radius: 10px;
+  --radius-lg: 16px;
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}

@@ -1,0 +1,19 @@
+@use "mixins" as m;
+
+.root {
+  border: 1px solid color-mix(in oklch, var(--live) 42%, transparent);
+  background: var(--live-soft);
+  color: var(--fg);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+
+.successLabel {
+  @include m.meta;
+  color: var(--live);
+  margin: 0 0 8px;
+}
+
+.successBody {
+  margin: 0 0 16px;
+}
