@@ -1,0 +1,35 @@
+@use 'mixins' as m;
+
+.root {
+    width: min(900px, calc(100vw - 32px));
+    max-height: 90vh;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    color: var(--fg);
+
+    &::backdrop {
+        background: color-mix(in oklch, black 62%, transparent);
+    }
+}
+
+.head {
+    @include m.row-between();
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+
+    h2 {
+        font-size: 22px;
+    }
+}
+
+.body {
+    max-height: calc(90vh - 73px);
+    padding: 24px;
+    overflow-y: auto;
+
+    > * + * {
+        margin-top: var(--gap-md);
+    }
+}

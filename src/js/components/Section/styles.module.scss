@@ -1,14 +1,15 @@
 .root {
-  padding-block: clamp(52px, 7vw, var(--gap-2xl));
+    position: relative;
 
-  /* Sections are separate components, so each owns its top rule and <main>'s first child suppresses it. */
-  border-top: 1px solid var(--border);
+    /* Sections are separate components, so each owns its top rule and <main>'s first child suppresses it. */
+    border-top: 1px solid var(--border);
+    padding-block: clamp(52px, 7vw, var(--gap-2xl));
 
-  &:first-child {
-    border-top: 0;
-  }
+    &:first-child {
+        border-top: 0;
+    }
 }
 
 .hero {
-  padding-block: clamp(56px, 9vw, 120px);
+    padding-block: clamp(56px, 9vw, 120px);
 }

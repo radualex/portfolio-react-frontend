@@ -1,11 +1,11 @@
 .root {
-  text-align: center;
-  padding: 48px 20px;
-  color: var(--muted);
+    padding: 48px 20px;
+    text-align: center;
+    color: var(--muted);
 
-  p {
-    margin: 10px auto 0;
-    max-width: 42ch;
-    font-size: 15px;
-  }
+    p {
+        max-width: 42ch;
+        margin: 10px auto 0;
+        font-size: 15px;
+    }
 }

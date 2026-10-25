@@ -1,5 +1,5 @@
-@use "mixins" as m;
+@use 'mixins' as m;
 
 .grid3 {
-  @include m.grid-3;
+    @include m.grid-3();
 }

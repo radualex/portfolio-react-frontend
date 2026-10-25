@@ -1,74 +1,82 @@
-@use "mixins" as m;
+@use 'mixins' as m;
 
 .experienceHead {
-  @include m.row-between;
-  margin-bottom: 36px;
-  align-items: flex-end;
+    @include m.row-between();
+    align-items: flex-end;
+    margin-bottom: 36px;
 }
 
 .experienceHeadText {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .logRow {
-  display: grid;
-  grid-template-columns: 168px 1fr 190px;
-  gap: var(--gap-lg);
-  padding: 26px 0;
-  border-top: 1px solid var(--border);
-  align-items: start;
-
-  &:last-child {
-    border-bottom: 1px solid var(--border);
-  }
-
-  h3 {
-    font-size: 19px;
-  }
-
-  @media (max-width: 920px) {
+    display: grid;
     grid-template-columns: 1fr;
+    align-items: start;
+    padding: 26px 0;
+    border-top: 1px solid var(--border);
     gap: 10px;
-  }
+
+    &:last-child {
+        border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+        font-size: 19px;
+    }
+
+    @include m.desktop() {
+        grid-template-columns: 168px 1fr 190px;
+        gap: var(--gap-lg);
+    }
 }
 
 .period {
-  @include m.meta;
+    @include m.meta();
 }
 
 .org {
-  color: var(--muted);
-  font-size: 14px;
-  margin: 3px 0 10px;
+    margin: 3px 0 10px;
+    color: var(--muted);
+    font-size: 14px;
 }
 
 .what {
-  margin: 0;
-  color: var(--muted);
-  font-size: 15px;
-  max-width: 54ch;
+    max-width: 54ch;
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
 }
 
 .pull {
-  @include m.meta;
-  text-align: right;
-  line-height: 1.7;
+    display: flex;
+    justify-content: flex-start;
 
-  @media (max-width: 920px) {
-    text-align: left;
-  }
+    @include m.desktop() {
+        justify-content: flex-end;
+    }
+}
+
+.stackList {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    gap: 6px;
+    list-style: none;
 }
 
 .education {
-  @include m.meta;
-  margin: var(--gap-xl) 0 0;
-  padding-top: var(--gap-md);
-  line-height: 1.8;
-  max-width: 90ch;
+    @include m.meta();
+    max-width: 90ch;
+    padding-top: var(--gap-md);
+    margin: var(--gap-xl) 0 0;
+    line-height: 1.8;
 
-  strong {
-    color: var(--fg);
-    font-family: var(--font-body);
-    letter-spacing: 0;
-  }
+    strong {
+        color: var(--fg);
+        font-family: var(--font-body);
+        letter-spacing: 0;
+    }
 }

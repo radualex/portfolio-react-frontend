@@ -1,11 +1,14 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext } from 'react';
 
-export const ToastContext = createContext<((message: string) => void) | null>(
-  null,
+export const ToastContext = createContext<((message: string) => void) | undefined>(
+    undefined
 );
 
 export const useToast = () => {
-  const toast = useContext(ToastContext);
-  if (!toast) throw new Error("useToast must be called inside <ToastProvider>.");
-  return toast;
+    const toast = useContext(ToastContext);
+    if (!toast) {
+        throw new Error('useToast must be called inside <ToastProvider>.');
+    }
+
+    return toast;
 };

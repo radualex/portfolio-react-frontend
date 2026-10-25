@@ -9,3 +9,6 @@ dist
 .omo/
 # Local Netlify folder
 .netlify
+
+# Playwright browser artifacts
+.playwright-mcp/

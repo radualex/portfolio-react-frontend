@@ -1,27 +1,27 @@
-import type {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  ReactNode,
-} from "react";
+import type { ComponentPropsWithoutRef } from 'react';
 
-export type Variant = "primary" | "secondary" | "ghost" | "danger";
+// Constants
+import type { ButtonSize, ButtonVariant } from './constants';
 
-export interface Common {
-  variant?: Variant;
-  size?: "md" | "sm";
-  arrow?: boolean;
-  block?: boolean;
-  className?: string;
-  children: ReactNode;
+export interface BaseProps {
+    variant?: ButtonVariant;
+    size?: ButtonSize;
+    arrow?: boolean;
+    block?: boolean;
+    className?: string;
 }
 
-export type AsLink = Common &
-  { to: string } &
-  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "className" | "href">;
+export interface LinkProps extends BaseProps, Omit<ComponentPropsWithoutRef<'a'>, 'href'> {
+    to: string;
+    href?: never;
+}
 
-export type AsAnchor = Common &
-  { href: string } &
-  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "className">;
+export interface AnchorProps extends BaseProps, ComponentPropsWithoutRef<'a'> {
+    href: string;
+    to?: never;
+}
 
-export type AsButton = Common &
-  Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className">;
+export interface ButtonProps extends BaseProps, ComponentPropsWithoutRef<'button'> {
+    to?: never;
+    href?: never;
+}

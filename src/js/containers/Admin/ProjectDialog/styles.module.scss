@@ -1,40 +1,40 @@
-@use "mixins" as m;
+@use 'mixins' as m;
 
 .root {
-  width: min(680px, calc(100vw - 32px));
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  color: var(--fg);
-  padding: 0;
+    width: min(680px, calc(100vw - 32px));
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    color: var(--fg);
 
-  &::backdrop {
-    background: color-mix(in oklch, black 62%, transparent);
-  }
+    &::backdrop {
+        background: color-mix(in oklch, black 62%, transparent);
+    }
 }
 
 .editorHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--gap-md);
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    gap: var(--gap-md);
 
-  h2 {
-    font-size: 22px;
-  }
+    h2 {
+        font-size: 22px;
+    }
 }
 
 .editorBody {
-  @include m.form-grid;
-  padding: 24px;
+    @include m.form-grid();
+    padding: 24px;
 }
 
 .editorFoot {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--gap-sm);
-  padding: 18px 24px;
-  border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    padding: 18px 24px;
+    border-top: 1px solid var(--border);
+    gap: var(--gap-sm);
 }

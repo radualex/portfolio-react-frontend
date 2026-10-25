@@ -1,76 +1,76 @@
-@use "mixins" as m;
+@use 'mixins' as m;
 
 @mixin body-text {
-  color: var(--muted);
-  font-size: 15px;
-  white-space: pre-wrap;
+    color: var(--muted);
+    font-size: 15px;
+    white-space: pre-wrap;
 }
 
 .msg {
-  border-top: 1px solid var(--border);
-  padding: 18px 0;
+    padding: 18px 0;
+    border-top: 1px solid var(--border);
 
-  &:first-child {
-    border-top: 0;
-    padding-top: 0;
-  }
+    &:first-child {
+        padding-top: 0;
+        border-top: 0;
+    }
 }
 
 .msgHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
 
-  strong {
-    font-size: 16px;
-  }
+    strong {
+        font-size: 16px;
+    }
 
-  /* Unread marker is --fg, not accent: ten unread dots would blow the accent budget. */
-  .msg[data-read="false"] & strong::before {
-    content: "";
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--fg);
-    margin-right: 9px;
-    vertical-align: middle;
-  }
+    /* Unread marker is --fg, not accent: ten unread dots would blow the accent budget. */
+    .msg[data-read='false'] & strong:before {
+        content: '';
+        display: inline-flex;
+        vertical-align: middle;
+        width: 7px;
+        height: 7px;
+        margin-right: 9px;
+        border-radius: 50%;
+        background: var(--fg);
+    }
 
-  .msg[data-read="true"] & strong {
-    font-weight: 500;
-    color: var(--muted);
-  }
+    .msg[data-read='true'] & strong {
+        font-weight: 500;
+        color: var(--muted);
+    }
 }
 
 .msgDate {
-  @include m.meta;
+    @include m.meta();
 }
 
 .msgSubject {
-  @include m.meta;
-  margin: 8px 0 0;
+    @include m.meta();
+    margin: 8px 0 0;
 }
 
 .msgBody {
-  @include body-text;
-  margin: 10px 0 14px;
+    @include body-text();
+    margin: 10px 0 14px;
 }
 
 .msgActions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .msgFrom {
-  @include m.meta;
-  margin-right: 8px;
-  align-self: center;
+    @include m.meta();
+    align-self: center;
+    margin-right: 8px;
 
-  a {
-    border-bottom: 1px solid var(--fg-line);
-  }
+    a {
+        border-bottom: 1px solid var(--fg-line);
+    }
 }

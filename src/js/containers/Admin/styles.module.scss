@@ -1,6 +1,0 @@
-@use "mixins" as m;
-
-.main {
-  @include m.container;
-  padding-block: var(--gap-xl) var(--gap-2xl);
-}

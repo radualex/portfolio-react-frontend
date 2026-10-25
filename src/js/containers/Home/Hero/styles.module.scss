@@ -1,54 +1,55 @@
-@use "mixins" as m;
+@use 'mixins' as m;
 
 .heroSplit {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: clamp(32px, 6vw, 80px);
-  align-items: center;
-
-  @media (max-width: 920px) {
+    display: grid;
     grid-template-columns: 1fr;
-  }
+    align-items: center;
+    gap: clamp(32px, 6vw, 80px);
+
+    @include m.desktop() {
+        grid-template-columns: 1.15fr 0.85fr;
+    }
 }
 
 .heroHeading {
-  margin-block: 4px 22px;
+    margin-block: 4px 22px;
 }
 
 .heroCta {
-  display: flex;
-  gap: var(--gap-sm);
-  flex-wrap: wrap;
-  margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 32px;
+    gap: var(--gap-sm);
 }
 
 .portrait {
-  max-width: 380px;
-  width: 100%;
-  justify-self: end;
-  margin: 0;
-
-  img {
-    width: 100%;
-    height: auto;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-  }
-
-  figcaption {
-    @include m.meta;
-    margin-top: 12px;
-    text-align: right;
-  }
-
-  /* Above the copy on narrow screens: a face beats a headline wrapped to four lines. */
-  @media (max-width: 920px) {
-    justify-self: start;
-    max-width: 260px;
     order: -1;
+    justify-self: start;
+    width: 100%;
+    max-width: 260px;
+    margin: 0;
+
+    img {
+        width: 100%;
+        height: auto;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+    }
 
     figcaption {
-      text-align: left;
+        @include m.meta();
+        margin-top: 12px;
+        text-align: left;
     }
-  }
+
+    /* The portrait leads on narrow screens: a face beats a headline wrapped to four lines. */
+    @include m.desktop() {
+        order: 0;
+        justify-self: end;
+        max-width: 380px;
+
+        figcaption {
+            text-align: right;
+        }
+    }
 }

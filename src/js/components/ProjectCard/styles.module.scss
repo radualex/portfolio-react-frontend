@@ -1,62 +1,69 @@
-@use "mixins" as m;
+@use 'mixins' as m;
 
 .root {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  transition:
-    border-color 0.15s var(--ease),
-    background 0.15s var(--ease);
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    gap: 10px;
+    background: var(--surface);
+    transition:
+        border-color 0.15s var(--ease),
+        background 0.15s var(--ease);
 
-  &:hover {
-    border-color: var(--fg-line);
-    background: color-mix(in oklch, var(--surface) 88%, white);
-  }
+    @include m.hover() {
+        &:hover {
+            border-color: var(--fg-line);
+            background: color-mix(in oklch, var(--surface) 88%, white);
+        }
+    }
 
-  p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 15px;
-  }
+    p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+    }
 }
 
 .top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .kind {
-  @include m.meta;
+    @include m.meta();
 }
 
 .foot {
-  /* margin-top:auto pins the footer down so cards in a row align their links despite different description lengths. */
-  margin-top: auto;
-  padding-top: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+
+    /* margin-top:auto pins the footer down so cards in a row align their links despite different description lengths. */
+    margin-top: auto;
+    gap: 12px;
 }
 
 .stack {
-  @include m.meta;
+    @include m.meta();
 }
 
 .link {
-  font-size: 14px;
-  font-weight: 600;
-  border-bottom: 1px solid var(--fg-line);
-  padding-bottom: 1px;
-  transition: border-color 0.15s var(--ease);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--fg-line);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.15s var(--ease);
 
-  &:hover {
-    border-bottom-color: var(--fg);
-  }
+    @include m.hover() {
+        &:hover {
+            text-decoration-color: var(--fg);
+        }
+    }
 }

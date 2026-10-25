@@ -1,26 +1,26 @@
-import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import type React from 'react';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
-// Router navigation only changes the location object, so the scroll is done by hand after paint.
 const ScrollToHash: React.FunctionComponent = () => {
-  const { pathname, hash } = useLocation();
+    const { pathname, hash } = useLocation();
 
-  useEffect(() => {
-    if (!hash) {
-      window.scrollTo({
-        top: 0,
-      });
+    useEffect(() => {
+        if (!hash) {
+            window.scrollTo({
+                top: 0
+            });
 
-      return;
-    }
+            return;
+        }
 
-    document.getElementById(hash.slice(1))?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }, [pathname, hash]);
+        document.querySelector(hash)?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }, [pathname, hash]);
 
-  return null;
+    return false;
 };
 
 export default ScrollToHash;

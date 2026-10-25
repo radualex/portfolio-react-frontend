@@ -1,45 +1,62 @@
-import React from "react";
-import Container from "@/components/Container";
-import Eyebrow from "@/components/Eyebrow";
-import Lead from "@/components/Lead";
-import ProjectCard from "@/components/ProjectCard";
-import Section from "@/components/Section";
-import SectionHead from "@/components/SectionHead";
-import { useStore } from "@/store/StoreContext";
+import React from 'react';
 
-import styles from "./styles.module.scss";
+// Constants
+import { ContentSection } from '@/admin/constants';
 
-export interface Props extends React.ComponentProps<"section"> {}
+// Components
+import Container from '@/components/Container';
+import EditableText from '@/components/EditableText';
+import Eyebrow from '@/components/Eyebrow';
+import Lead from '@/components/Lead';
+import ProjectCard from '@/components/ProjectCard';
+import Section from '@/components/Section';
+import SectionEditButton from '@/components/SectionEditButton';
+import SectionHead from '@/components/SectionHead';
 
-const Projects: React.FunctionComponent<Props> = (props) => {
-  const { projects } = useStore();
-  /* Hidden projects are withheld here, not filtered in the card. */
-  const visible = projects();
+// Store
+import { useStore } from '@/store/StoreContext';
 
-  return (
-    <Section id="projects" {...props}>
-      <Container>
-        <SectionHead>
-          <Eyebrow quiet>Built outside office hours</Eyebrow>
-          <h2>Side projects, shipped and public.</h2>
-          <Lead>
-            Where I try the patterns before they turn up in client work. One of
-            them ended up on npm.
-          </Lead>
-        </SectionHead>
+// Styles
+import styles from './styles.module.scss';
 
-        {visible.length === 0 ? (
-          <Lead>No projects are published right now.</Lead>
-        ) : (
-          <div className={styles.grid3}>
-            {visible.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        )}
-      </Container>
-    </Section>
-  );
+export interface Props extends React.ComponentProps<'section'> {}
+
+const Projects: React.FunctionComponent<Props> = ({ ...props }) => {
+    const { projects } = useStore();
+    const visible = projects();
+
+    return (
+        <Section id="projects" {...props}>
+            <SectionEditButton target={ContentSection.Projects} label="projects" />
+            <Container>
+                <SectionHead>
+                    <Eyebrow quiet>
+                        <EditableText section={ContentSection.Projects} path="projects.eyebrow" />
+                    </Eyebrow>
+                    <h2>
+                        <EditableText section={ContentSection.Projects} path="projects.heading" />
+                    </h2>
+                    <Lead>
+                        <EditableText section={ContentSection.Projects} path="projects.lead" />
+                    </Lead>
+                </SectionHead>
+
+                {visible.length === 0 ? (
+                    <Lead>
+                        <EditableText section={ContentSection.Projects} path="projects.empty" />
+                    </Lead>
+                ) : (
+                    <div className={styles.grid3}>
+                        {visible.map((project) => {
+                            return (
+                                <ProjectCard key={project.id} project={project} />
+                            );
+                        })}
+                    </div>
+                )}
+            </Container>
+        </Section>
+    );
 };
 
 export default Projects;

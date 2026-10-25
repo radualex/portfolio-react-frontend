@@ -1,18 +1,18 @@
 /* Off-screen until focused, then it slides in; display:none would take it out of the tab order and defeat the point. */
 .root {
-  position: absolute;
-  left: 12px;
-  top: -60px;
-  z-index: 50;
-  background: var(--accent);
-  color: var(--bg);
-  padding: 10px 16px;
-  border-radius: var(--radius);
-  font-size: 14px;
-  font-weight: 600;
-  transition: top 0.15s var(--ease);
+    position: absolute;
+    z-index: 50;
+    top: -60px;
+    left: 12px;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 14px;
+    font-weight: 600;
+    transition: top 0.15s var(--ease);
 
-  &:focus {
-    top: 12px;
-  }
+    &:focus {
+        top: 12px;
+    }
 }

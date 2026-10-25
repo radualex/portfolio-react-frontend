@@ -1,67 +1,73 @@
-import { useState } from "react";
-import type { Validator } from "@/helpers/validators";
+import { useState } from 'react';
 
-const useFieldErrors = <K extends string>(
-  validators: Partial<Record<K, Validator>>,
-) => {
-  const [errors, setErrors] = useState<Partial<Record<K, string>>>({});
+// Types
+import type { Validator } from '@/helpers/types';
 
-  const set = (key: K, message: string | undefined) =>
-    setErrors((current) => ({
-      ...current,
-      [key]: message,
-    }));
+const useFieldErrors = <K extends string>(validators: Partial<Record<K, Validator>>) => {
+    const [errors, setErrors] = useState<Partial<Record<K, string>>>({});
 
-  const check = (key: K, value: string) => {
-    const problem = validators[key]?.(value);
+    const set = (key: K, message: string | undefined) => {
+        setErrors((current) => {
+            return {
+                ...current,
+                [key]: message
+            };
+        });
+    };
 
-    set(key, problem);
+    const check = (key: K, value: string) => {
+        const problem = validators[key]?.(value);
 
-    return !problem;
-  };
+        set(key, problem);
 
-  const recheck = (key: K, value: string) => {
-    if (!errors[key]) {
-      return;
-    }
+        return !problem;
+    };
 
-    check(key, value);
-  };
+    const recheck = (key: K, value: string) => {
+        const message = errors[key];
 
-  const checkAll = (values: Record<K, string>, form: HTMLFormElement | null) => {
-    const next: Partial<Record<K, string>> = {};
-    let ok = true;
+        if (!message) {
+            return;
+        }
 
-    for (const key of Object.keys(validators) as K[]) {
-      const problem = validators[key]?.(values[key] ?? "");
+        check(key, value);
+    };
 
-      if (problem) {
-        next[key] = problem;
-        ok = false;
-      }
-    }
+    const checkAll = (values: Record<K, string>, form: HTMLFormElement | null) => {
+        const next: Partial<Record<K, string>> = {};
+        let isOk = true;
 
-    setErrors(next);
+        for (const key of Object.keys(validators) as K[]) {
+            const problem = validators[key]?.(values[key]);
 
-    /* aria-invalid lands on the next paint, so the focus move has to wait for it. */
-    if (!ok && form) {
-      requestAnimationFrame(() => {
-        form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
-      });
-    }
+            if (problem) {
+                next[key] = problem;
+                isOk = false;
+            }
+        }
 
-    return ok;
-  };
+        setErrors(next);
 
-  const clear = () => setErrors({});
+        if (!isOk && form) {
+            requestAnimationFrame(() => {
+                form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+            });
+        }
 
-  return {
-    errors,
-    check,
-    recheck,
-    checkAll,
-    clear,
-  };
+        return isOk;
+    };
+
+    const clear = () => {
+        setErrors({});
+    };
+
+    return {
+        errors,
+        check,
+        recheck,
+        checkAll,
+        clear
+    };
 };
 
 export default useFieldErrors;

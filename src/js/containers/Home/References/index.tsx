@@ -1,45 +1,84 @@
-import React from "react";
-import Container from "@/components/Container";
-import Eyebrow from "@/components/Eyebrow";
-import Lead from "@/components/Lead";
-import Section from "@/components/Section";
-import SectionHead from "@/components/SectionHead";
+import React from 'react';
 
-import { REFERENCE_SLOTS } from "./constants";
-import styles from "./styles.module.scss";
+// Constants
+import { ContentSection } from '@/admin/constants';
 
-export interface Props extends React.ComponentProps<"section"> {}
+// Components
+import Container from '@/components/Container';
+import EditableText from '@/components/EditableText';
+import Eyebrow from '@/components/Eyebrow';
+import Lead from '@/components/Lead';
+import Section from '@/components/Section';
+import SectionEditButton from '@/components/SectionEditButton';
+import SectionHead from '@/components/SectionHead';
+import { useInlineEdit } from '@/admin/InlineEditContext';
 
-const References: React.FunctionComponent<Props> = (props) => {
-  return (
-    <Section id="references" {...props}>
-      <Container>
-        <SectionHead className={styles.referencesHead}>
-          <Eyebrow quiet>References</Eyebrow>
-          <h2>Three client quotes, currently being collected.</h2>
-          <Lead>
-            These slots stay visibly empty until the real words arrive. Nothing on
-            this page is invented — if you want to speak to someone I've worked
-            with, ask and I'll make the introduction.
-          </Lead>
-        </SectionHead>
+// Styles
+import styles from './styles.module.scss';
 
-        <div className={styles.grid3}>
-          {REFERENCE_SLOTS.map((slot) => (
-            <figure className={styles.quoteCard} key={slot}>
-              <span className={styles.quotePending}>Awaiting quote</span>
-              <blockquote>
-                Reserved for a reference from a recent engagement.
-              </blockquote>
-              <figcaption className={styles.quoteAuthor}>
-                — Slot {slot} of {REFERENCE_SLOTS.length}
-              </figcaption>
+// Types
+import type { ReferenceItem } from '@/store/types';
+
+export interface Props extends React.ComponentProps<'section'> {}
+
+const References: React.FunctionComponent<Props> = ({ ...props }) => {
+    const { content, editingSection } = useInlineEdit();
+    const { references } = content;
+    const isEditing = editingSection === ContentSection.References;
+
+    const renderQuote = (item: ReferenceItem, index: number) => {
+        return (
+            <figure className={styles.quoteCard} key={item.id}>
+                <blockquote>
+                    <EditableText section={ContentSection.References} path={`references.items.${index}.quote`} />
+                </blockquote>
+                {(item.author.trim() || isEditing) && (
+                    <figcaption className={styles.quoteAuthor}>
+                        — <EditableText section={ContentSection.References} path={`references.items.${index}.author`} />
+                    </figcaption>
+                )}
             </figure>
-          ))}
-        </div>
-      </Container>
-    </Section>
-  );
+        );
+    };
+
+    const renderPending = (item: ReferenceItem, index: number) => {
+        return (
+            <figure className={styles.quoteCard} key={item.id}>
+                <span className={styles.quotePending}>
+                    {references.pendingLabel}
+                </span>
+                <blockquote>{references.placeholderQuote}</blockquote>
+                <figcaption className={styles.quoteAuthor}>
+                    — Slot {index + 1} of {references.items.length}
+                </figcaption>
+            </figure>
+        );
+    };
+
+    return (
+        <Section id="references" {...props}>
+            <SectionEditButton target={ContentSection.References} label="references" />
+            <Container>
+                <SectionHead className={styles.referencesHead}>
+                    <Eyebrow quiet>
+                        <EditableText section={ContentSection.References} path="references.eyebrow" />
+                    </Eyebrow>
+                    <h2>
+                        <EditableText section={ContentSection.References} path="references.heading" />
+                    </h2>
+                    <Lead>
+                        <EditableText section={ContentSection.References} path="references.lead" />
+                    </Lead>
+                </SectionHead>
+
+                <div className={styles.grid3}>
+                    {references.items.map((item, index) => {
+                        return item.quote.trim() || isEditing ? renderQuote(item, index) : renderPending(item, index);
+                    })}
+                </div>
+            </Container>
+        </Section>
+    );
 };
 
 export default References;

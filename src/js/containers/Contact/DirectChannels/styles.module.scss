@@ -1,80 +1,81 @@
-@use "mixins" as m;
+@use 'mixins' as m;
 
 .root {
-  /* Sticky follows the form down on desktop; the offset clears the sticky nav. */
-  position: sticky;
-  top: 96px;
-
-  @media (max-width: 920px) {
     position: static;
-  }
+
+    @include m.desktop() {
+        position: sticky;
+        top: 96px;
+    }
 }
 
 .channelsHeading {
-  margin-bottom: 18px;
+    margin-bottom: 18px;
 }
 
 .channelList {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .channel {
-  display: grid;
-  grid-template-columns: 90px 1fr;
-  gap: 14px;
-  padding: 13px 0;
-  border-top: 1px solid var(--border);
-  align-items: baseline;
-
-  &:last-child {
-    border-bottom: 1px solid var(--border);
-  }
-
-  dt {
-    @include m.meta;
-    margin: 0;
-  }
-
-  dd {
-    margin: 0;
-    font-size: 15px;
-    overflow-wrap: anywhere;
-
-    a {
-      border-bottom: 1px solid var(--fg-line);
-      padding-bottom: 1px;
-      transition: border-color 0.15s var(--ease);
-
-      &:hover {
-        border-bottom-color: var(--fg);
-      }
-    }
-  }
-
-  @media (max-width: 520px) {
+    display: grid;
     grid-template-columns: 1fr;
+    align-items: baseline;
+    padding: 13px 0;
+    border-top: 1px solid var(--border);
     gap: 4px;
-  }
+
+    &:last-child {
+        border-bottom: 1px solid var(--border);
+    }
+
+    dt {
+        @include m.meta();
+        margin: 0;
+    }
+
+    dd {
+        margin: 0;
+        font-size: 15px;
+        overflow-wrap: anywhere;
+
+        a {
+            padding-bottom: 1px;
+            border-bottom: 1px solid var(--fg-line);
+            transition: border-color 0.15s var(--ease);
+
+            @include m.hover() {
+                &:hover {
+                    border-bottom-color: var(--fg);
+                }
+            }
+        }
+    }
+
+    @include m.tablet() {
+        grid-template-columns: 90px 1fr;
+        gap: 14px;
+    }
 }
 
 .channelNote {
-  margin-top: var(--gap-lg);
-  padding: 20px 22px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
+    margin-top: var(--gap-lg);
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
 
-  ul {
-    margin: 0;
-    padding-left: 18px;
-    color: var(--muted);
-    font-size: 14px;
-    line-height: 1.75;
-  }
+    ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.75;
+    }
 }
 
 .channelNoteLabel {
-  @include m.meta;
-  margin: 0 0 10px;
+    @include m.meta();
+    margin: 0 0 10px;
 }

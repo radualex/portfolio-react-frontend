@@ -1,5 +1,5 @@
-@use "mixins" as m;
+@use 'mixins' as m;
 
 .root {
-  @include m.container;
+    @include m.container();
 }

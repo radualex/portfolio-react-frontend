@@ -1,56 +1,77 @@
-import React from "react";
-import Container from "@/components/Container";
-import Eyebrow from "@/components/Eyebrow";
-import Section from "@/components/Section";
-import SectionHead from "@/components/SectionHead";
-import Tag from "@/components/Tag";
+import React from 'react';
 
-import { CAPABILITIES, WORKING_STACK } from "./constants";
-import styles from "./styles.module.scss";
+// Constants
+import { ContentSection } from '@/admin/constants';
 
-export interface Props extends React.ComponentProps<"section"> {}
+// Components
+import Container from '@/components/Container';
+import EditableText from '@/components/EditableText';
+import Eyebrow from '@/components/Eyebrow';
+import Pill from '@/components/Pill';
+import Section from '@/components/Section';
+import SectionEditButton from '@/components/SectionEditButton';
+import SectionHead from '@/components/SectionHead';
+import { useInlineEdit } from '@/admin/InlineEditContext';
 
-const Capabilities: React.FunctionComponent<Props> = (props) => {
-  return (
-    <Section id="capabilities" {...props}>
-      <Container>
-        <SectionHead>
-          <Eyebrow quiet>How I work</Eyebrow>
-          <h2>Three things you'll notice in the first sprint.</h2>
-        </SectionHead>
+// Styles
+import styles from './styles.module.scss';
 
-        <div className={styles.grid3}>
-          {CAPABILITIES.map((capability) => (
-            <div className={styles.feature} key={capability.id}>
-              <div className={styles.featureMark} aria-hidden="true">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                >
-                  <path d={capability.path} />
-                </svg>
-              </div>
-              <h3>{capability.title}</h3>
-              <p>{capability.body}</p>
-            </div>
-          ))}
-        </div>
+export interface Props extends React.ComponentProps<'section'> {}
 
-        <div className={styles.stackStrip}>
-          <p className={styles.stackLabel}>Working stack</p>
-          <ul className={styles.tagRow}>
-            {WORKING_STACK.map((item) => (
-              <Tag as="li" key={item}>
-                {item}
-              </Tag>
-            ))}
-          </ul>
-        </div>
-      </Container>
-    </Section>
-  );
+const Capabilities: React.FunctionComponent<Props> = ({ ...props }) => {
+    const { content } = useInlineEdit();
+    const { capabilities } = content;
+
+    return (
+        <Section id="capabilities" {...props}>
+            <SectionEditButton target={ContentSection.Capabilities} label="approach" />
+            <Container>
+                <SectionHead>
+                    <Eyebrow quiet>
+                        <EditableText section={ContentSection.Capabilities} path="capabilities.eyebrow" />
+                    </Eyebrow>
+                    <h2>
+                        <EditableText section={ContentSection.Capabilities} path="capabilities.heading" />
+                    </h2>
+                </SectionHead>
+
+                <div className={styles.grid3}>
+                    {capabilities.items.map((capability, index) => {
+                        return (
+                            <div className={styles.feature} key={capability.id}>
+                                <div className={styles.featureMark} aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                                        <path d={capability.path} />
+                                    </svg>
+                                </div>
+                                <h3>
+                                    <EditableText section={ContentSection.Capabilities} path={`capabilities.items.${index}.title`} />
+                                </h3>
+                                <p>
+                                    <EditableText section={ContentSection.Capabilities} path={`capabilities.items.${index}.body`} />
+                                </p>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                <div className={styles.stackStrip}>
+                    <p className={styles.stackLabel}>
+                        <EditableText section={ContentSection.Capabilities} path="capabilities.stackLabel" />
+                    </p>
+                    <ul className={styles.pillRow}>
+                        {capabilities.stack.map((_, index) => {
+                            return (
+                                <Pill as="li" key={index}>
+                                    <EditableText section={ContentSection.Capabilities} path={`capabilities.stack.${index}`} />
+                                </Pill>
+                            );
+                        })}
+                    </ul>
+                </div>
+            </Container>
+        </Section>
+    );
 };
 
 export default Capabilities;

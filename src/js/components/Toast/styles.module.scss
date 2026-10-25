@@ -1,23 +1,23 @@
 .toast {
-  position: fixed;
-  left: 50%;
-  bottom: 28px;
-  transform: translate(-50%, 16px);
-  background: var(--fg);
-  color: var(--bg);
-  padding: 11px 20px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 600;
-  z-index: 60;
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    opacity 0.15s var(--ease),
-    transform 0.15s var(--ease);
+    position: fixed;
+    z-index: 60;
+    bottom: 28px;
+    left: 50%;
+    padding: 11px 20px;
+    border-radius: 999px;
+    transform: translate(-50%, 16px);
+    background: var(--fg);
+    color: var(--bg);
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 0.15s var(--ease),
+        transform 0.15s var(--ease);
 
-  &[data-show="true"] {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
+    &[data-show='true'] {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
 }

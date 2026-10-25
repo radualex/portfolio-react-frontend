@@ -1,129 +1,143 @@
-/* ───────────────────────────────────────────────────────────────────────
-   The prototype shared utility classes — .container, .lead, .meta,
-   .grid-3 — across every page. CSS Modules hash class names per file, so
-   a shared class is not reachable from a sibling module. Those utilities
-   become mixins here instead: same declarations, composed at build time.
+@mixin tablet {
+    @media (width >= 48rem) {
+        @content;
+    }
+}
 
-   Only put something here if two or more modules need it. Anything used
-   twice inside one module belongs in that module as a local @mixin.
-   ─────────────────────────────────────────────────────────────────── */
+@mixin desktop {
+    @media (width >= 64rem) {
+        @content;
+    }
+}
+
+@mixin short {
+    @media (height <= 45rem) {
+        @content;
+    }
+}
+
+@mixin hover {
+    @media (hover: hover) {
+        @content;
+    }
+}
 
 @mixin container {
-  max-width: var(--container);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
 }
 
 @mixin stack($gap: var(--gap-md)) {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-  > * + * {
-    margin-top: $gap;
-  }
+    > * + * {
+        margin-top: $gap;
+    }
 }
 
 @mixin row {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-md);
-  flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-md);
 }
 
 @mixin row-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--gap-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
 }
 
 @mixin grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap-lg);
-
-  @media (max-width: 920px) {
+    display: grid;
     grid-template-columns: 1fr;
-  }
+    gap: var(--gap-lg);
+
+    @include desktop() {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 @mixin grid-2-1 {
-  display: grid;
-  grid-template-columns: 1.35fr 1fr;
-  gap: var(--gap-xl);
-  align-items: start;
-
-  @media (max-width: 920px) {
+    display: grid;
     grid-template-columns: 1fr;
+    align-items: start;
     gap: var(--gap-lg);
-  }
+
+    @include desktop() {
+        grid-template-columns: 1.35fr 1fr;
+        gap: var(--gap-xl);
+    }
 }
 
 @mixin form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--gap-md);
-
-  @media (max-width: 620px) {
+    display: grid;
     grid-template-columns: 1fr;
-  }
+    gap: var(--gap-md);
+
+    @include tablet() {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @mixin lead {
-  font-size: var(--fs-lead);
-  line-height: 1.6;
-  color: var(--muted);
-  max-width: 58ch;
-  margin: 0;
+    max-width: 58ch;
+    margin: 0;
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    color: var(--muted);
 }
 
 @mixin eyebrow {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 0 0 var(--gap-md);
+    margin: 0 0 var(--gap-md);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
 }
 
 @mixin meta {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  color: var(--muted);
-  letter-spacing: 0.02em;
+    font-family: var(--font-mono);
+    font-size: var(--fs-meta);
+    color: var(--muted);
+    letter-spacing: 0.02em;
 }
 
 @mixin num {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
 }
 
 @mixin section-head {
-  max-width: 42ch;
-  margin-bottom: var(--gap-xl);
+    max-width: 42ch;
+    margin-bottom: var(--gap-xl);
 }
 
 @mixin status-note {
-  color: var(--muted);
-  font-size: 14px;
-  margin: 0;
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
 }
 
 @mixin card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 26px;
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
 }
 
 @mixin sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }

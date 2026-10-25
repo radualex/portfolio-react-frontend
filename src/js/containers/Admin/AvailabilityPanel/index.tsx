@@ -1,100 +1,90 @@
-import React, { useCallback, useState } from "react";
-import type { ChangeEvent } from "react";
-import Button from "@/components/Button";
-import ButtonGroup from "@/components/ButtonGroup";
-import AvailabilityNote from "@/components/AvailabilityNote";
-import Panel from "@/components/Panel";
-import StatusPill from "@/components/StatusPill";
-import TextField from "@/components/TextField";
-import { useToast } from "@/components/Toast/ToastContext";
-import { useStore } from "@/store/StoreContext";
-import type { AvailabilityState } from "@/store/types";
-import { LIMIT, STATES } from "./constants";
-import styles from "./styles.module.scss";
+import React, { useCallback, useState, type ChangeEvent } from 'react';
 
-const AvailabilityPanel: React.FunctionComponent = () => {
-  const { state, setAvailability } = useStore();
-  const toast = useToast();
+// Constants
+import { LIMIT, STATES } from './constants';
+import { ButtonSize, ButtonVariant } from '@/components/Button/constants';
+import { AvailabilityState } from '@/store/constants';
 
-  /* The note is a local draft so the public pages do not repaint on every keystroke. */
-  const [note, setNote] = useState(state.availability.note);
+// Components
+import AvailabilityNote from '@/components/AvailabilityNote';
+import Button from '@/components/Button';
+import ButtonGroup from '@/components/ButtonGroup';
+import Panel from '@/components/Panel';
+import StatusPill from '@/components/StatusPill';
+import TextField from '@/components/TextField';
+import { useToast } from '@/components/Toast/ToastContext';
 
-  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setNote(event.target.value);
-  }, []);
+// Store
+import { useStore } from '@/store/StoreContext';
 
-  const handlePick = useCallback(
-    (next: AvailabilityState) => {
-      /* The state flip carries the current draft, so an unsaved note is not lost. */
-      setAvailability({
-        state: next,
-        note,
-      });
-      toast(
-        next === "available" ? "Shown as available" : "Shown as not available",
-      );
-    },
-    [note, setAvailability, toast],
-  );
+// Styles
+import styles from './styles.module.scss';
 
-  const handleSave = useCallback(() => {
-    setAvailability({
-      note,
-    });
-    toast("Note saved");
-  }, [note, setAvailability, toast]);
+export interface Props extends Omit<React.ComponentProps<typeof Panel>, 'title' | 'note' | 'action' | 'children'> {};
 
-  return (
-    <Panel
-      title="Availability"
-      note="Drives the pill on every public page."
-      action={
-        <ButtonGroup
-          label="Availability state"
-          value={state.availability.state}
-          options={STATES}
-          onChange={handlePick}
-        />
-      }
-    >
-      <TextField
-        id="availability-note"
-        label="Line shown under the pill"
-        type="text"
-        maxLength={LIMIT}
-        value={note}
-        onChange={handleChange}
-        hint={
-          <React.Fragment>
-            <span className={styles.num}>{note.length}</span>/{LIMIT}{" "}
-            characters. Leave empty to show the pill on its own.
-          </React.Fragment>
+const AvailabilityPanel: React.FunctionComponent<Props> = ({ ...props }) => {
+    const { state, setAvailability } = useStore();
+    const toast = useToast();
+
+    const [note, setNote] = useState(state.availability.note);
+
+    const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        setNote(event.target.value);
+    }, []);
+
+    const handlePick = useCallback((next: AvailabilityState) => {
+        const picked = STATES.find((option) => {
+            return option.value === next;
+        })?.value;
+
+        if (picked === undefined) {
+            return;
         }
-      />
 
-      <div className={styles.previewBox}>
-        <p className={styles.previewLabel}>Live preview</p>
-        {/* Fed the draft, not the store, so the preview is honest about what "Save note" publishes. */}
-        <StatusPill
-          availability={{
-            state: state.availability.state,
-            note,
-          }}
-        />
-        <AvailabilityNote
-          availability={{
-            state: state.availability.state,
-            note,
-          }}
-          className={styles.previewNote}
-        />
-      </div>
+        setAvailability({
+            state: picked,
+            note
+        });
+        toast(
+            picked === AvailabilityState.Available ? 'Shown as available' : 'Shown as not available'
+        );
+    }, [note, setAvailability, toast]);
 
-      <Button variant="primary" size="sm" onClick={handleSave}>
-        Save note
-      </Button>
-    </Panel>
-  );
+    const handleSave = useCallback(() => {
+        setAvailability({
+            note
+        });
+        toast('Note saved');
+    }, [note, setAvailability, toast]);
+
+    const availabilityDraft = {
+        state: state.availability.state,
+        note
+    };
+    const filterAction = (
+        <ButtonGroup label="Availability state" value={state.availability.state} options={STATES} onChange={handlePick} />
+    );
+    const hint = (
+        <React.Fragment>
+            <span className={styles.num}>{note.length}</span>/{LIMIT} characters. Leave empty to show the pill on its own.
+        </React.Fragment>
+    );
+
+    return (
+        <Panel {...props} title="Availability" note="Drives the pill on every public page." action={filterAction}>
+            <TextField id="availability-note" label="Line shown under the pill" type="text" maxLength={LIMIT} value={note} onChange={handleChange} hint={hint} />
+
+            <div className={styles.previewBox}>
+                <p className={styles.previewLabel}>Live preview</p>
+                <StatusPill availability={availabilityDraft} />
+                <AvailabilityNote availability={availabilityDraft} className={styles.previewNote} />
+            </div>
+
+            <Button variant={ButtonVariant.Primary} size={ButtonSize.Sm} onClick={handleSave}>
+                Save note
+            </Button>
+        </Panel>
+    );
 };
 
 export default AvailabilityPanel;

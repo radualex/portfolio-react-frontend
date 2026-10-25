@@ -1,0 +1,50 @@
+@use 'mixins' as m;
+
+.list {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: start;
+    padding: 18px 0;
+    border-top: 1px solid var(--border);
+    gap: var(--gap-md);
+
+    &:first-child {
+        padding-top: 0;
+        border-top: 0;
+    }
+
+    &:last-child {
+        padding-bottom: 0;
+    }
+
+    @include m.tablet() {
+        grid-template-columns: 1fr auto;
+    }
+}
+
+.rowMain {
+    h3 {
+        margin: 0;
+        font-size: 17px;
+    }
+}
+
+.description {
+    @include m.status-note();
+    margin-top: 4px;
+}
+
+.rowActions {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.state {
+    @include m.meta();
+}

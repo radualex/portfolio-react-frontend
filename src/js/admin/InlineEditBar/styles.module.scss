@@ -1,0 +1,39 @@
+@use 'mixins' as m;
+
+.root {
+    position: fixed;
+    z-index: 31;
+    right: 12px;
+    bottom: 80px;
+    left: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    gap: 8px;
+    background: color-mix(in oklch, var(--surface) 94%, transparent);
+    box-shadow: 0 16px 40px color-mix(in oklch, var(--bg) 70%, transparent);
+    backdrop-filter: blur(14px);
+
+    @include m.tablet() {
+        left: auto;
+        right: 20px;
+        bottom: 84px;
+        justify-content: flex-start;
+    }
+}
+
+.label {
+    @include m.meta();
+    display: none;
+    padding-inline: 8px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+
+    @include m.tablet() {
+        display: block;
+    }
+}

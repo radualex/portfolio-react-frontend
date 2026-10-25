@@ -1,0 +1,37 @@
+const MESSAGE_ID = 'classname-ternary';
+const BANNED_TYPES = new Set([
+    'ConditionalExpression',
+    'TemplateLiteral',
+    'LogicalExpression',
+    'CallExpression',
+    'ArrowFunctionExpression'
+]);
+function isAllowed(node) {
+    return !BANNED_TYPES.has(node.expression.type);
+}
+const rule = {
+    meta: {
+        type: 'problem',
+        docs: {
+            description: 'Require className to be a single styles.x (or a classNames() result); no ternary, concatenated class strings, or state functions.'
+        },
+        schema: [],
+        messages: {
+            [MESSAGE_ID]: 'Build className with classNames(styles.root, ...) or use a single styles.x inline.'
+        }
+    },
+    create(context) {
+        return {
+            JSXAttribute(node) {
+                const { name, value } = node;
+                if (name.type !== 'JSXIdentifier' || name.name !== 'className') {
+                    return;
+                }
+                if (value?.type === 'JSXExpressionContainer' && !isAllowed(value)) {
+                    context.report({ node, messageId: MESSAGE_ID });
+                }
+            }
+        };
+    }
+};
+export default rule;

@@ -1,69 +1,69 @@
-@use "mixins" as m;
+@use 'mixins' as m;
 
 @mixin body-text {
-  color: var(--muted);
-  font-size: 15px;
-  white-space: pre-wrap;
+    color: var(--muted);
+    font-size: 15px;
+    white-space: pre-wrap;
 }
 
 .num {
-  @include m.num;
+    @include m.num();
 }
 
 .row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--gap-md);
-  align-items: start;
-  padding: 18px 0;
-  border-top: 1px solid var(--border);
-
-  &:first-child {
-    border-top: 0;
-    padding-top: 0;
-  }
-
-  @media (max-width: 620px) {
+    display: grid;
     grid-template-columns: 1fr;
-  }
+    align-items: start;
+    padding: 18px 0;
+    border-top: 1px solid var(--border);
+    gap: var(--gap-md);
+
+    &:first-child {
+        padding-top: 0;
+        border-top: 0;
+    }
+
+    @include m.tablet() {
+        grid-template-columns: 1fr auto;
+    }
 }
 
 .rowMain {
-  .row[data-hidden="true"] & {
-    opacity: 0.5;
-  }
+    .row[data-hidden='true'] & {
+        opacity: 0.5;
+    }
 
-  h3 {
-    font-size: 17px;
-  }
+    h3 {
+        font-size: 17px;
+    }
 }
 
 .rowTitle {
-  @include m.row;
-  gap: 10px;
+    @include m.row();
+    gap: 10px;
 }
 
 .rowKind {
-  @include m.meta;
+    @include m.meta();
 }
 
 .rowDescription {
-  @include body-text;
-  margin: 6px 0 8px;
+    @include body-text();
+    margin: 6px 0 8px;
 }
 
 .rowMeta {
-  @include m.meta;
-  margin: 0;
+    @include m.meta();
+    margin: 0;
 }
 
 .rowActions {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-
-  @media (max-width: 620px) {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
-  }
+    gap: 6px;
+
+    @include m.tablet() {
+        justify-content: flex-end;
+    }
 }

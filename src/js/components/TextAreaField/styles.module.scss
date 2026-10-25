@@ -1,81 +1,85 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+@use 'mixins' as m;
 
-  label {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    label {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
 }
 
 .optional {
-  text-transform: none;
-  letter-spacing: 0.02em;
-  opacity: 0.7;
-  margin-left: 6px;
+    margin-left: 6px;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    opacity: 0.7;
 }
 
 .hint {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 0;
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
 }
 
 /* --fg-line, not --border: an input edge is non-text, so WCAG 1.4.11 wants 3:1. */
 .control {
-  width: 100%;
-  padding: 12px 14px;
-  min-height: 44px;
-  border: 1px solid var(--fg-line);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--fg);
-  font: inherit;
-  font-size: 15px;
-  transition:
-    border-color 0.15s var(--ease),
-    background 0.15s var(--ease);
+    width: 100%;
+    min-height: 44px;
+    padding: 12px 14px;
+    border: 1px solid var(--fg-line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--fg);
+    font: inherit;
+    font-size: 15px;
+    transition:
+        border-color 0.15s var(--ease),
+        background 0.15s var(--ease);
 
-  &::placeholder {
-    color: var(--muted);
-  }
+    &::placeholder {
+        color: var(--muted);
+    }
 
-  &:hover {
-    background: color-mix(in oklch, var(--surface) 88%, white);
-  }
+    @include m.hover() {
+        &:hover {
+            background: color-mix(in oklch, var(--surface) 88%, white);
+        }
+    }
 
-  &:focus-visible {
-    border-color: var(--accent);
-    outline: 2px solid var(--accent-soft);
-    outline-offset: 0;
-  }
+    &:focus-visible {
+        border-color: var(--accent);
+        outline: 2px solid var(--accent-soft);
+        outline-offset: 0;
+    }
 
-  .root[data-invalid="true"] & {
-    border-color: var(--accent);
-  }
+    .root[data-invalid='true'] & {
+        border-color: var(--accent);
+    }
 }
 
 .textarea {
-  min-height: 128px;
-  resize: vertical;
-  line-height: 1.6;
+    min-height: 128px;
+    resize: vertical;
+    line-height: 1.6;
 }
 
 .short {
-  min-height: 92px;
+    min-height: 92px;
 }
 
 .error {
-  font-size: 13px;
-  color: var(--accent);
-  margin: 0;
-  min-height: 0;
+    min-height: 0;
+    margin: 0;
+    font-size: 13px;
+    color: var(--accent);
 }
 
 .full {
-  grid-column: 1 / -1;
+    grid-column: 1 / -1;
 }

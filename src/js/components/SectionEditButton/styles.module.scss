@@ -1,0 +1,40 @@
+@use 'mixins' as m;
+
+.root {
+    position: absolute;
+    z-index: 5;
+    top: 12px;
+    right: 12px;
+    display: grid;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    place-items: center;
+    background: color-mix(in oklch, var(--surface) 92%, transparent);
+    color: var(--muted);
+    cursor: pointer;
+    transition:
+        color 0.15s var(--ease),
+        border-color 0.15s var(--ease),
+        background 0.15s var(--ease);
+
+    @include m.hover() {
+        &:hover {
+            border-color: var(--fg-line);
+            color: var(--fg);
+            background: var(--surface);
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--accent-soft);
+        outline-offset: 2px;
+    }
+
+    @include m.tablet() {
+        top: 16px;
+        right: 16px;
+    }
+}

@@ -1,36 +1,37 @@
-/* A validator returns the message to show, or undefined when the value is fine. */
-export type Validator = (value: string) => string | undefined;
+// Constants
+import { EMAIL } from './constants';
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Types
+import type { Validator } from './types';
 
-export const required =
-  (message = "This one is required."): Validator =>
-  (value) =>
-    value.trim() ? undefined : message;
+export const required = (message = 'This one is required.'): Validator => {
+    return (value) => {
+        return value.trim() ? undefined : message;
+    };
+};
 
-export const email =
-  (message = "That address does not look complete."): Validator =>
-  (value) => {
-    const trimmed = value.trim();
+export const email = (message = 'That address does not look complete.'): Validator => {
+    return (value) => {
+        const trimmed = value.trim();
 
-    /* An empty field is required's problem, not this one's. */
-    if (!trimmed) {
-      return undefined;
-    }
+        if (!trimmed) {
+            return;
+        }
 
-    return EMAIL.test(trimmed) ? undefined : message;
-  };
+        return EMAIL.test(trimmed) ? undefined : message;
+    };
+};
 
-export const all =
-  (...validators: Validator[]): Validator =>
-  (value) => {
-    for (const validate of validators) {
-      const problem = validate(value);
+export const all = (...validators: Validator[]): Validator => {
+    return (value) => {
+        for (const validate of validators) {
+            const problem = validate(value);
 
-      if (problem) {
-        return problem;
-      }
-    }
+            if (problem) {
+                return problem;
+            }
+        }
 
-    return undefined;
-  };
+        return;
+    };
+};

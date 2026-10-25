@@ -1,21 +1,24 @@
-import React from "react";
-import classNames from "classnames";
+import React from 'react';
+import classNames from 'classnames';
 
-import styles from "./styles.module.scss";
+// Styles
+import styles from './styles.module.scss';
 
-export interface Props extends React.ComponentProps<"p"> {
-  quiet?: boolean;
-  children: React.ReactNode;
+export interface Props extends React.ComponentProps<'p'> {
+    quiet?: boolean;
+    children: React.ReactNode;
 }
 
 const Eyebrow: React.FunctionComponent<Props> = ({ quiet = false, className, children, ...props }) => {
-  const classes = classNames(styles.root, className, { [styles.quiet]: quiet });
+    const classes = classNames(styles.root, className, {
+        [styles.quiet]: quiet
+    });
 
-  return (
-    <p className={classes} {...props}>
-      {children}
-    </p>
-  );
+    return (
+        <p className={classes} {...props}>
+            {children}
+        </p>
+    );
 };
 
 export default Eyebrow;

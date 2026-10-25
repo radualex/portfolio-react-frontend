@@ -1,40 +1,40 @@
-@use "mixins" as m;
+@use 'mixins' as m;
 
 .root {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface);
 
-  & + & {
-    margin-top: var(--gap-lg);
-  }
+    & + & {
+        margin-top: var(--gap-lg);
+    }
 }
 
 .head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--gap-md);
-  flex-wrap: wrap;
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    gap: var(--gap-md);
 
-  h2 {
-    font-size: 22px;
-  }
+    h2 {
+        font-size: 22px;
+    }
 }
 
 .note {
-  @include m.meta;
-  margin-top: 4px;
-  margin-bottom: 0;
+    @include m.meta();
+    margin-top: 4px;
+    margin-bottom: 0;
 }
 
 .body {
-  padding: 24px;
+    padding: 24px;
 
-  > * + * {
-    margin-top: var(--gap-md);
-  }
+    > * + * {
+        margin-top: var(--gap-md);
+    }
 }

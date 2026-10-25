@@ -1,5 +1,5 @@
 export interface UsePageMetaOptions {
-  title: string;
-  description?: string;
-  noindex?: boolean;
+    title: string;
+    description?: string;
+    noindex?: boolean;
 }

@@ -1,28 +1,33 @@
-import React from "react";
-import classNames from "classnames";
-import { useStore } from "@/store/StoreContext";
-import type { Availability } from "@/store/types";
+import React from 'react';
+import classNames from 'classnames';
 
-import styles from "./styles.module.scss";
+// Store
+import { useStore } from '@/store/StoreContext';
 
-export interface Props extends React.ComponentProps<"p"> {
-  availability?: Availability;
+// Styles
+import styles from './styles.module.scss';
+
+// Types
+import type { Availability } from '@/store/types';
+
+export interface Props extends React.ComponentProps<'p'> {
+    availability?: Availability;
 }
 
 const AvailabilityNote: React.FunctionComponent<Props> = ({ availability, className, ...props }) => {
-  const classes = classNames(styles.root, className);
-  const { state } = useStore();
-  const current = availability ?? state.availability;
+    const classes = classNames(styles.root, className);
+    const { state } = useStore();
+    const current = availability ?? state.availability;
 
-  if (!current.note) {
-    return null;
-  }
+    if (!current.note) {
+        return;
+    }
 
-  return (
-    <p className={classes} {...props}>
-      {current.note}
-    </p>
-  );
+    return (
+        <p className={classes} {...props}>
+            {current.note}
+        </p>
+    );
 };
 
 export default AvailabilityNote;

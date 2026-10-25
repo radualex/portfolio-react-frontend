@@ -1,52 +1,65 @@
-import React from "react";
-import AvailabilityBlock from "@/components/AvailabilityBlock";
-import Button from "@/components/Button";
-import Container from "@/components/Container";
-import Eyebrow from "@/components/Eyebrow";
-import Lead from "@/components/Lead";
-import Section from "@/components/Section";
-import { CV_PATH } from "@/store/defaults";
+import React from 'react';
 
-import portrait from "../../../../assets/radu-stoica.jpg";
-import styles from "./styles.module.scss";
+// Constants
+import { ContentSection } from '@/admin/constants';
+import { ButtonVariant } from '@/components/Button/constants';
+import { PORTRAIT } from './constants';
 
-export interface Props extends React.ComponentProps<"section"> {}
+// Components
+import AvailabilityBlock from '@/components/AvailabilityBlock';
+import Button from '@/components/Button';
+import Container from '@/components/Container';
+import EditableText from '@/components/EditableText';
+import Eyebrow from '@/components/Eyebrow';
+import Lead from '@/components/Lead';
+import Section from '@/components/Section';
+import SectionEditButton from '@/components/SectionEditButton';
 
-const Hero: React.FunctionComponent<Props> = (props) => {
-  return (
-    <Section hero {...props}>
-      <Container className={styles.heroSplit}>
-        <div>
-          {/* One of only two accent eyebrows on the whole site. */}
-          <Eyebrow>Freelance software engineer · Amsterdam</Eyebrow>
-          <h1 className={styles.heroHeading}>
-            Ten years of frontend work in places where bugs are expensive.
-          </h1>
-          <Lead>
-            React and TypeScript, mostly. I've shipped production interfaces for
-            lithography machines, medical instruments, SWIFT payments and
-            ocean-going vessels — and usually ended up in the backend too.
-          </Lead>
+// Store
+import { CV_PATH } from '@/store/defaults';
 
-          <AvailabilityBlock />
+// Styles
+import styles from './styles.module.scss';
 
-          <div className={styles.heroCta}>
-            <Button variant="primary" to="/contact">
-              Start a project
-            </Button>
-            <Button arrow href={CV_PATH} target="_blank" rel="noopener">
-              Read the CV
-            </Button>
-          </div>
-        </div>
+export interface Props extends React.ComponentProps<'section'> {}
 
-        <figure className={styles.portrait}>
-          <img src={portrait} width="720" height="720" alt="Radu Alexandru Stoica" />
-          <figcaption>Amsterdam, NL · CET (UTC+1)</figcaption>
-        </figure>
-      </Container>
-    </Section>
-  );
+const Hero: React.FunctionComponent<Props> = ({ ...props }) => {
+    return (
+        <Section hero {...props}>
+            <SectionEditButton target={ContentSection.Hero} label="hero" />
+            <Container className={styles.heroSplit}>
+                <div>
+                    <Eyebrow>
+                        <EditableText section={ContentSection.Hero} path="hero.eyebrow" />
+                    </Eyebrow>
+                    <h1 className={styles.heroHeading}>
+                        <EditableText section={ContentSection.Hero} path="hero.heading" />
+                    </h1>
+                    <Lead>
+                        <EditableText section={ContentSection.Hero} path="hero.lead" />
+                    </Lead>
+
+                    <AvailabilityBlock />
+
+                    <div className={styles.heroCta}>
+                        <Button variant={ButtonVariant.Primary} to="/contact">
+                            <EditableText section={ContentSection.Hero} path="hero.primaryCta" />
+                        </Button>
+                        <Button arrow href={CV_PATH} target="_blank" rel="noopener">
+                            <EditableText section={ContentSection.Hero} path="hero.cvCta" />
+                        </Button>
+                    </div>
+                </div>
+
+                <figure className={styles.portrait}>
+                    <img src={PORTRAIT} width="720" height="720" alt="Radu Alexandru Stoica" />
+                    <figcaption>
+                        <EditableText section={ContentSection.Hero} path="hero.location" />
+                    </figcaption>
+                </figure>
+            </Container>
+        </Section>
+    );
 };
 
 export default Hero;
