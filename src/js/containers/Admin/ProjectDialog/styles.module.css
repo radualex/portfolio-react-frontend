@@ -1,0 +1,27 @@
+@reference "../../../styles/global.css";
+
+.root {
+    @apply p-0 border border-border rounded-card bg-surface text-fg;
+
+    width: min(680px, calc(100vw - 32px));
+
+    &::backdrop {
+        background: color-mix(in oklch, black 62%, transparent);
+    }
+}
+
+.editorHead {
+    @apply ui-row-between py-5 px-6 border-b border-border;
+
+    h2 {
+        @apply text-[22px];
+    }
+}
+
+.editorBody {
+    @apply ui-form-grid p-6;
+}
+
+.editorFoot {
+    @apply flex justify-end py-4.5 px-6 border-t border-border gap-sm;
+}

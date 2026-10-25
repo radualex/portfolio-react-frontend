@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { ButtonSize, ButtonVariant } from './constants';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { AnchorProps, ButtonProps, LinkProps } from './types';

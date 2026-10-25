@@ -1,0 +1,32 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply outline-none;
+}
+
+.editing {
+    @apply cursor-text;
+
+    display: inline;
+    border-radius: 3px;
+    outline: 1px dashed color-mix(in oklch, var(--accent) 70%, transparent);
+    outline-offset: 4px;
+
+    @media (hover: hover) {
+        &:hover {
+            outline-color: var(--accent);
+        }
+    }
+
+    &:focus {
+        @apply bg-accent-soft;
+
+        outline: 2px solid var(--accent);
+    }
+
+    &:empty::before {
+        @apply text-muted;
+
+        content: "Type here…";
+    }
+}

@@ -8,7 +8,7 @@ import { AvailabilityState } from '@/store/constants';
 import { useStore } from '@/store/StoreContext';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { Availability } from '@/store/types';

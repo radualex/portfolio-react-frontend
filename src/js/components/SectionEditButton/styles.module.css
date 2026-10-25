@@ -1,0 +1,32 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply
+        absolute z-5 top-3 right-3 grid size-9
+        p-0 border border-border place-items-center text-muted cursor-pointer
+    ;
+
+    border-radius: 50%;
+    background: color-mix(in oklch, var(--surface) 92%, transparent);
+    transition:
+        color 0.15s var(--ease),
+        border-color 0.15s var(--ease),
+        background 0.15s var(--ease);
+
+    @media (hover: hover) {
+        &:hover {
+            @apply text-fg bg-surface;
+
+            border-color: var(--fg-line);
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--accent-soft);
+        outline-offset: 2px;
+    }
+
+    @variant tablet {
+        @apply top-4 right-4;
+    }
+}

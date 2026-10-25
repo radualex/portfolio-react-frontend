@@ -14,7 +14,7 @@ import Group from '../Group';
 import { fieldPatch } from '../helpers';
 
 // Styles
-import styles from '../styles.module.scss';
+import styles from '../styles.module.css';
 
 // Types
 import type { ReferenceItem, SiteContent } from '@/store/types';

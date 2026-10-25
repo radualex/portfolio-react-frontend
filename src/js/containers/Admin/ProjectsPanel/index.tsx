@@ -17,7 +17,7 @@ import ProjectDialog from '@/containers/Admin/ProjectDialog';
 import { useStore } from '@/store/StoreContext';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { Project, ProjectDraft } from '@/store/types';

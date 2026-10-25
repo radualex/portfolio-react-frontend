@@ -1,0 +1,60 @@
+@reference "../../../styles/global.css";
+
+.msg {
+    @apply border-t border-border py-4.5 px-0;
+
+    &:first-child {
+        @apply pt-0 border-t-0;
+    }
+}
+
+.msgHead {
+    @apply flex flex-wrap items-baseline justify-between gap-3;
+
+    strong {
+        font-size: 16px;
+    }
+
+    /* Unread marker is --fg, not accent: ten unread dots would blow the accent budget. */
+    .msg[data-read="false"] & strong::before {
+        @apply inline-flex bg-fg mr-2.25;
+
+        content: "";
+        vertical-align: middle;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+    }
+
+    .msg[data-read="true"] & strong {
+        @apply font-medium text-muted;
+    }
+}
+
+.msgDate {
+    @apply ui-meta;
+}
+
+.msgSubject {
+    @apply ui-meta mt-2 mb-0;
+}
+
+.msgBody {
+    @apply text-muted whitespace-pre-wrap mt-2.5 mb-3.5;
+
+    font-size: 15px;
+}
+
+.msgActions {
+    @apply flex flex-wrap gap-2;
+}
+
+.msgFrom {
+    @apply ui-meta mr-2;
+
+    align-self: center;
+
+    a {
+        border-bottom: 1px solid var(--fg-line);
+    }
+}

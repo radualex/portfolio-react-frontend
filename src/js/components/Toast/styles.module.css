@@ -1,0 +1,19 @@
+@reference "../../styles/global.css";
+
+.toast {
+    @apply fixed bottom-7 rounded-full bg-fg py-2.75 px-5 text-[14px] text-bg font-semibold;
+
+    z-index: 60;
+    left: 50%;
+    transform: translate(-50%, 16px);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 0.15s var(--ease),
+        transform 0.15s var(--ease);
+
+    &[data-show="true"] {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}

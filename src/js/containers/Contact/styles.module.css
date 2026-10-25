@@ -1,0 +1,27 @@
+@reference "../../styles/global.css";
+
+.hero {
+    padding-bottom: clamp(32px, 4vw, 56px);
+}
+
+.heroHeading {
+    max-width: 24ch;
+}
+
+.heroLead {
+    @apply mt-5.5;
+}
+
+.split {
+    @apply ui-grid-2-1;
+}
+
+.formHeading {
+    @apply mb-7;
+}
+
+.feedbackIntro {
+    h2 + p {
+        @apply ui-lead mt-4;
+    }
+}

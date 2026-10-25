@@ -23,7 +23,7 @@ import useFieldErrors from '@/hooks/useFieldErrors';
 import { useStore } from '@/store/StoreContext';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 export interface Props extends React.ComponentProps<'form'> {}
 

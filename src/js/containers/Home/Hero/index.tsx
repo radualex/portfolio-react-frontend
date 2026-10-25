@@ -19,7 +19,7 @@ import SectionEditButton from '@/components/SectionEditButton';
 import { CV_PATH } from '@/store/defaults';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 export interface Props extends React.ComponentProps<'section'> {}
 

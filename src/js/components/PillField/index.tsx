@@ -7,7 +7,7 @@ import { Check, X } from 'lucide-react';
 import { NO_SUGGESTIONS } from './constants';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { PillOption } from './types';

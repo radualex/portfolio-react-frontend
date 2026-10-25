@@ -1,0 +1,55 @@
+@reference "../../../styles/global.css";
+
+.grid3 {
+    @apply ui-grid-3;
+}
+
+.featureMark {
+    @apply grid mb-md border border-border text-muted;
+
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    place-items: center;
+
+    svg {
+        width: 19px;
+        height: 19px;
+    }
+}
+
+.feature {
+    h3 {
+        @apply mb-2;
+    }
+
+    p {
+        @apply m-0 text-muted;
+
+        font-size: 15px;
+    }
+}
+
+.stackStrip {
+    @apply grid items-start pt-lg mt-xl border-t border-border gap-3.5;
+
+    grid-template-columns: 1fr;
+
+    @variant desktop {
+        @apply gap-lg;
+
+        grid-template-columns: 168px 1fr;
+    }
+}
+
+.stackLabel {
+    @apply ui-meta pt-1.5 m-0 uppercase;
+
+    letter-spacing: 0.1em;
+}
+
+.pillRow {
+    @apply flex flex-wrap p-0 m-0 gap-2;
+
+    list-style: none;
+}

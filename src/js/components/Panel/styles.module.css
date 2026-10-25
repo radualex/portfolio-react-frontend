@@ -1,0 +1,29 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply border border-border rounded-card overflow-hidden bg-surface;
+
+    & + & {
+        @apply mt-lg;
+    }
+}
+
+.head {
+    @apply ui-row justify-between py-5 px-6 border-b border-border;
+
+    h2 {
+        @apply text-[22px];
+    }
+}
+
+.note {
+    @apply ui-meta mt-1 mb-0;
+}
+
+.body {
+    @apply p-6;
+
+    > * + * {
+        @apply mt-md;
+    }
+}

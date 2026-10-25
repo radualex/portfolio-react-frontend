@@ -1,0 +1,84 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply
+        inline-flex items-center justify-center rounded-base min-h-11 py-2.75 px-5.5
+        border border-transparent gap-2.25 text-[15px] font-semibold tracking-[-0.005em]
+    ;
+
+    transition:
+        transform 0.05s var(--ease),
+        background 0.15s var(--ease),
+        border-color 0.15s var(--ease);
+
+    &:active {
+        transform: translateY(1px);
+    }
+
+    &[disabled] {
+        @apply opacity-45 cursor-not-allowed;
+    }
+}
+
+/* Dark text on orange, never white: white-on-accent is 2.97:1 and fails WCAG 1.4.3; this pairing is 6.54:1. */
+.primary {
+    @apply border-accent bg-accent text-bg;
+
+    @media (hover: hover) {
+        &:hover:not([disabled]) {
+            border-color: color-mix(in oklch, var(--accent) 86%, white);
+            background: color-mix(in oklch, var(--accent) 86%, white);
+        }
+    }
+}
+
+.secondary {
+    @apply border-fg-line bg-transparent text-fg;
+
+    @media (hover: hover) {
+        &:hover:not([disabled]) {
+            @apply border-fg bg-fg-soft;
+        }
+    }
+}
+
+.ghost {
+    @apply border-transparent bg-transparent text-fg px-3;
+
+    @media (hover: hover) {
+        &:hover:not([disabled]) {
+            @apply bg-fg-soft;
+        }
+    }
+}
+
+/* Destructive actions borrow the accent on hover only — a permanently red button in
+   every admin row would eat the accent budget. */
+.danger {
+    @apply border-fg-line bg-transparent text-fg;
+
+    @media (hover: hover) {
+        &:hover:not([disabled]) {
+            @apply border-accent bg-accent-soft;
+        }
+    }
+}
+
+.sm {
+    @apply min-h-8.5 py-1.5 px-3.25 rounded-lg text-meta font-medium;
+}
+
+.arrow::after {
+    content: "→";
+    transition: transform 0.15s var(--ease);
+}
+
+@media (hover: hover) {
+    .arrow:hover::after {
+        transform: translateX(3px);
+    }
+}
+
+.block {
+    @apply w-full;
+}

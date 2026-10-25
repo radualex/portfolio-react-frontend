@@ -5,7 +5,7 @@ import React from 'react';
 import type { ContentSection } from '@/admin/constants';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 export interface Props extends React.ComponentProps<'div'> {
     active?: ContentSection;

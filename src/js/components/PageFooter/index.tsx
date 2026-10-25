@@ -14,7 +14,7 @@ import SectionEditButton from '@/components/SectionEditButton';
 import { CV_PATH, EMAIL_ADDRESS, GITHUB } from '@/store/defaults';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 export interface Props extends React.ComponentProps<'footer'> {
     firstLink?: 'email' | 'home';

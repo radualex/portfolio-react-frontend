@@ -14,7 +14,7 @@ import { useToast } from '@/components/Toast/ToastContext';
 import { useStore } from '@/store/StoreContext';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 export interface Props extends Omit<React.ComponentProps<typeof Panel>, 'title' | 'note' | 'action' | 'children'> {}
 

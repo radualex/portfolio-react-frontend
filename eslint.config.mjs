@@ -1,5 +1,8 @@
+import css from '@eslint/css';
+import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import reactPlugin from 'eslint-plugin-react';
 import configure, { configs } from '@onefinity/eslint-config';
+import { tailwind4 } from 'tailwind-csstree';
 
 import propsInline from './eslint-rules/jsx-props-inline/index.js'; // eslint-disable-line @onefinity/eslint-config/import-grouping
 import componentPropsString from './eslint-rules/use-component-props-string/index.js';
@@ -7,6 +10,14 @@ import noLiteralClassname from './eslint-rules/no-literal-classname/index.js';
 import noInlineObjectLiteral from './eslint-rules/no-inline-object-literal/index.js';
 import noInlineHandlers from './eslint-rules/no-inline-handlers/index.js';
 import noClassnameTernary from './eslint-rules/no-classname-ternary/index.js';
+
+const JS_TS_FILE_PATTERNS = ['**/*.{js,jsx,cjs,mjs,ts,tsx}'];
+
+const isTailwindConfig = (entry) => {
+    const hasTailwindPlugin = Boolean(entry.plugins?.['better-tailwindcss']);
+
+    return hasTailwindPlugin;
+};
 
 const config = configure([{
     ignores: [
@@ -155,6 +166,25 @@ const config = configure([{
     linterOptions: {
         reportUnusedDisableDirectives: 'error'
     }
+}, {
+    files: ['**/*.css'],
+    language: 'css/css',
+    languageOptions: {
+        customSyntax: tailwind4,
+        tolerant: true
+    },
+    plugins: {
+        css,
+        'better-tailwindcss': eslintPluginBetterTailwindcss
+    },
+    settings: {
+        'better-tailwindcss': {
+            entryPoint: 'src/js/styles/global.css'
+        }
+    },
+    rules: {
+        'better-tailwindcss/enforce-canonical-classes': 'error'
+    }
 }]);
 
 const promoteRuleWarnings = (rules) => {
@@ -182,6 +212,24 @@ const promoteWarningsToErrors = (entry) => {
     };
 };
 
-export default config.flat().map((entry) => {
+// The shared base config enables JavaScript-only rules at the top level, which
+// ESLint 10 rejects once the `css/css` language applies to `*.css`. Scope every
+// un-scoped rule set to JS/TS so the Tailwind block is the only one touching CSS.
+const scopedConfig = config.map((entry) => {
+    if (Array.isArray(entry) || entry.files || entry.ignores || isTailwindConfig(entry)) {
+        return entry;
+    }
+
+    if (entry.rules || entry.languageOptions) {
+        return {
+            ...entry,
+            files: JS_TS_FILE_PATTERNS
+        };
+    }
+
+    return entry;
+});
+
+export default scopedConfig.flat().map((entry) => {
     return promoteWarningsToErrors(entry);
 });

@@ -27,7 +27,7 @@ import usePageMeta from '@/hooks/usePageMeta';
 import { useStore } from '@/store/StoreContext';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const Contact: React.FunctionComponent = () => {
     const { state } = useStore();

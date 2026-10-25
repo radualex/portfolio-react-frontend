@@ -1,0 +1,49 @@
+@reference "../../../../styles/global.css";
+
+.root {
+    @apply mt-md;
+}
+
+.toolbar {
+    @apply flex items-center justify-between gap-sm;
+}
+
+.count {
+    @apply ui-meta m-0;
+}
+
+.items {
+    @apply mt-sm;
+}
+
+.item {
+    @apply py-3.5 border-t border-border;
+
+    &:first-child {
+        @apply pt-0 border-t-0;
+    }
+
+    &:last-child {
+        @apply pb-0;
+    }
+}
+
+.summary {
+    @apply cursor-pointer;
+}
+
+.summary strong {
+    @apply text-body;
+}
+
+.meta {
+    @apply ui-meta ml-2;
+}
+
+.fields {
+    @apply ui-form-grid mt-md;
+}
+
+.actions {
+    @apply flex flex-wrap mt-md gap-1.5;
+}

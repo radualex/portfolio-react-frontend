@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { ButtonGroupVariant } from './constants';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { GroupOption } from './types';

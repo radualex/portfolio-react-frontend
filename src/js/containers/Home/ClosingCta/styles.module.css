@@ -1,0 +1,22 @@
+@reference "../../../styles/global.css";
+
+.root {
+    @apply text-center;
+}
+
+.ctaInner {
+    @apply max-w-155;
+}
+
+.ctaLead {
+    @apply mt-4.5 mx-auto mb-2.5;
+}
+
+.ctaNote {
+    @apply ui-status-note;
+
+    min-height: 1lh;
+
+    /* Always rendered, even when empty, so removing the line does not collapse the gap above the button. */
+    margin: 0 0 30px;
+}

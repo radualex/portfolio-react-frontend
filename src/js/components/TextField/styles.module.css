@@ -1,0 +1,60 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply flex flex-col gap-1.75;
+
+    label {
+        @apply text-[12px] tracking-[0.06em] uppercase text-muted;
+
+        font-family: var(--font-mono);
+    }
+}
+
+.optional {
+    @apply ml-1.5 normal-case tracking-[0.02em] opacity-70;
+}
+
+.hint {
+    @apply m-0 text-meta text-muted;
+}
+
+/* --fg-line, not --border: an input edge is non-text, so WCAG 1.4.11 wants 3:1. */
+.control {
+    @apply w-full min-h-11 py-3 px-3.5 rounded-base bg-surface text-fg;
+
+    border: 1px solid var(--fg-line);
+    font: inherit;
+    font-size: 15px;
+    transition:
+        border-color 0.15s var(--ease),
+        background 0.15s var(--ease);
+
+    &::placeholder {
+        @apply text-muted;
+    }
+
+    @media (hover: hover) {
+        &:hover {
+            background: color-mix(in oklch, var(--surface) 88%, white);
+        }
+    }
+
+    &:focus-visible {
+        @apply border-accent;
+
+        outline: 2px solid var(--accent-soft);
+        outline-offset: 0;
+    }
+
+    .root[data-invalid="true"] & {
+        @apply border-accent;
+    }
+}
+
+.error {
+    @apply min-h-0 m-0 text-meta text-accent;
+}
+
+.full {
+    @apply col-span-full;
+}

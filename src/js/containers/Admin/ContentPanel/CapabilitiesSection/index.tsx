@@ -18,7 +18,7 @@ import { fieldPatch } from '../helpers';
 import { SKILL_SUGGESTIONS } from '@/store/defaults';
 
 // Styles
-import styles from '../styles.module.scss';
+import styles from '../styles.module.css';
 
 // Types
 import type { CapabilityItem, SiteContent } from '@/store/types';

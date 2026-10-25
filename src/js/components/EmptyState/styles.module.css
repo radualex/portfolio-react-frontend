@@ -1,0 +1,12 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply py-12 px-5 text-center text-muted;
+
+    p {
+        @apply mt-2.5 mx-auto;
+
+        max-width: 42ch;
+        font-size: 15px;
+    }
+}

@@ -14,7 +14,7 @@ import SectionHead from '@/components/SectionHead';
 import { useInlineEdit } from '@/admin/InlineEditContext';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { ReferenceItem } from '@/store/types';

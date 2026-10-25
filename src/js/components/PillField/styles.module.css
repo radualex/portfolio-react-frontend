@@ -1,0 +1,131 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply flex flex-col gap-1.75;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+.label {
+    @apply text-[12px] text-muted uppercase tracking-[0.06em];
+
+    font-family: var(--font-mono);
+}
+
+.inputGroup {
+    @apply rounded-base bg-surface py-1.5 px-2;
+
+    min-height: 44px;
+    border: 1px solid var(--fg-line);
+    transition:
+        border-color 0.15s var(--ease),
+        background 0.15s var(--ease);
+
+    @media (hover: hover) {
+        &:hover {
+            background: color-mix(in oklch, var(--surface) 88%, white);
+        }
+    }
+
+    &:focus-within {
+        border-color: var(--accent);
+        outline: 2px solid var(--accent-soft);
+        outline-offset: 0;
+    }
+}
+
+.chips {
+    @apply flex flex-wrap items-center w-full gap-1.5;
+}
+
+.chip {
+    @apply
+        inline-flex items-center rounded-full border border-border
+        gap-1.5 text-[12px] text-muted tracking-[0.02em]
+    ;
+
+    padding: 5px 6px 5px 12px;
+    font-family: var(--font-mono);
+}
+
+.remove {
+    @apply grid cursor-pointer border-0 bg-transparent p-0 text-muted;
+
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    place-items: center;
+
+    @media (hover: hover) {
+        &:hover {
+            @apply bg-fg-soft text-fg;
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--accent-soft);
+        outline-offset: 1px;
+    }
+}
+
+.input {
+    @apply flex-1 py-1.5 px-1 border-0 bg-transparent text-fg;
+
+    min-width: 8rem;
+    font: inherit;
+    font-size: 15px;
+
+    &::placeholder {
+        @apply text-muted;
+    }
+
+    &:focus-visible {
+        @apply outline-none;
+    }
+}
+
+.positioner {
+    @apply outline-none;
+
+    z-index: 40;
+    width: var(--anchor-width);
+}
+
+.popup {
+    @apply rounded-base border border-border bg-surface p-1.5 overflow-y-auto;
+
+    max-height: 260px;
+    box-shadow: 0 16px 40px color-mix(in oklch, var(--bg) 70%, transparent);
+}
+
+.list {
+    @apply flex flex-col gap-0.5;
+}
+
+.item {
+    @apply flex items-center gap-2 rounded-lg py-2 px-2.5 text-[14px] text-fg cursor-pointer;
+
+    &[data-highlighted] {
+        @apply bg-fg-soft;
+    }
+
+    &[data-selected] {
+        @apply text-fg;
+    }
+}
+
+.indicator {
+    @apply text-accent;
+
+    width: 14px;
+}
+
+.empty {
+    @apply p-2.5 text-meta text-muted;
+}
+
+.hint {
+    @apply m-0 text-meta text-muted;
+}

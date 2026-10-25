@@ -14,7 +14,7 @@ import Group from '../Group';
 import { fieldPatch, toList } from '../helpers';
 
 // Styles
-import styles from '../styles.module.scss';
+import styles from '../styles.module.css';
 
 // Types
 import type { ChannelItem, SiteContent } from '@/store/types';

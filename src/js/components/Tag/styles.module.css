@@ -1,0 +1,8 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply
+        inline-flex items-center rounded-full ui-meta py-1.25 px-3
+        border border-border text-[12px]
+    ;
+}

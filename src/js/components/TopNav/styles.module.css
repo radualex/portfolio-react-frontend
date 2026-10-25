@@ -1,0 +1,128 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply sticky top-0 border-b border-border;
+
+    z-index: 20;
+    background: color-mix(in oklch, var(--bg) 86%, transparent);
+    backdrop-filter: blur(14px);
+}
+
+.inner {
+    @apply ui-container flex items-center flex-wrap gap-sm py-3.5;
+
+    @variant desktop {
+        @apply gap-lg;
+
+        flex-wrap: nowrap;
+    }
+}
+
+.logo {
+    @apply mr-auto font-semibold whitespace-nowrap;
+
+    font-family: var(--font-display);
+    font-size: 19px;
+    letter-spacing: -0.01em;
+
+    /* --muted, not accent: the public pages already spend their accent on the hero eyebrow and the primary button. */
+    span {
+        @apply hidden ml-2.5 text-muted text-[12px] uppercase;
+
+        font-family: var(--font-mono);
+        letter-spacing: 0.08em;
+
+        @variant desktop {
+            display: inline;
+        }
+    }
+}
+
+.nav {
+    @apply hidden flex-col w-full pb-1.5 mt-1.5 border-t border-border gap-0;
+
+    order: 3;
+
+    &[data-open="true"] {
+        @apply flex;
+    }
+
+    a {
+        @apply py-3.25 px-0.5 border-b border-border text-fg;
+
+        font-size: 16px;
+        transition:
+            color 0.15s var(--ease),
+            border-color 0.15s var(--ease);
+
+        &:last-child {
+            @apply border-b-0;
+        }
+
+        @media (hover: hover) {
+            &:hover {
+                @apply bg-fg-soft;
+            }
+        }
+
+        &[aria-current="page"] {
+            @apply text-fg;
+
+            border-bottom-color: var(--fg-line);
+        }
+
+        @variant desktop {
+            @apply py-1 px-0 text-muted;
+
+            border-bottom: 1px solid transparent;
+            font-size: 14px;
+
+            &:last-child {
+                border-bottom: 1px solid transparent;
+            }
+
+            @media (hover: hover) {
+                &:hover {
+                    @apply text-fg bg-transparent;
+
+                    border-bottom-color: var(--fg-line);
+                }
+            }
+        }
+    }
+
+    @variant desktop {
+        @apply flex flex-row pb-0 mt-0 border-t-0 gap-6.5;
+
+        order: 0;
+        width: auto;
+    }
+}
+
+.toggle {
+    @apply inline-flex flex-none justify-center items-center rounded-base bg-transparent text-fg;
+
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--fg-line);
+    transition: background 0.15s var(--ease);
+
+    @media (hover: hover) {
+        &:hover {
+            @apply bg-fg-soft;
+        }
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    @variant desktop {
+        @apply hidden;
+    }
+}
+
+.srOnly {
+    @apply sr-only;
+}

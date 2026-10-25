@@ -1,0 +1,54 @@
+@reference "../../../styles/global.css";
+
+.num {
+    @apply ui-num;
+}
+
+.row {
+    @apply grid py-4.5 border-t border-border gap-md;
+
+    grid-template-columns: 1fr;
+    align-items: start;
+
+    &:first-child {
+        @apply pt-0 border-t-0;
+    }
+
+    @variant tablet {
+        grid-template-columns: 1fr auto;
+    }
+}
+
+.rowMain {
+    .row[data-hidden="true"] & {
+        @apply opacity-50;
+    }
+
+    h3 {
+        @apply text-[17px];
+    }
+}
+
+.rowTitle {
+    @apply ui-row gap-2.5;
+}
+
+.rowKind {
+    @apply ui-meta;
+}
+
+.rowDescription {
+    @apply text-muted text-[15px] whitespace-pre-wrap mt-1.5 mb-2;
+}
+
+.rowMeta {
+    @apply ui-meta m-0;
+}
+
+.rowActions {
+    @apply flex flex-wrap justify-start gap-1.5;
+
+    @variant tablet {
+        @apply justify-end;
+    }
+}

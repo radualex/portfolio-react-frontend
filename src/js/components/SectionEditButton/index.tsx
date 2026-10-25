@@ -10,7 +10,7 @@ import { useAdminMode } from '@/admin/AdminModeContext';
 import { useInlineEdit } from '@/admin/InlineEditContext';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 export interface Props extends Omit<React.ComponentProps<'button'>, 'onClick'> {
     target: ContentSection;

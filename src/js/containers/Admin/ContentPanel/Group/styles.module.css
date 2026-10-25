@@ -1,0 +1,13 @@
+@reference "../../../../styles/global.css";
+
+.root {
+    & + & {
+        @apply border-t border-border pt-lg;
+    }
+
+    h3 {
+        @apply mt-0 mb-md;
+
+        font-size: 17px;
+    }
+}

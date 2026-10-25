@@ -1,0 +1,10 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply ui-eyebrow;
+}
+
+/* Accent is budgeted at roughly two marks per viewport, so only the page heroes keep it. */
+.quiet {
+    @apply text-muted;
+}

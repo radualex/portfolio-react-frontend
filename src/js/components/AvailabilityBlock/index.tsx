@@ -6,7 +6,7 @@ import StatusPill from '@/components/StatusPill';
 import AvailabilityNote from '@/components/AvailabilityNote';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { Availability } from '@/store/types';

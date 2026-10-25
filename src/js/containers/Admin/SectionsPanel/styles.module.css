@@ -1,0 +1,43 @@
+@reference "../../../styles/global.css";
+
+.list {
+    @apply flex flex-col;
+}
+
+.row {
+    @apply grid items-start py-4.5 border-t border-border gap-md;
+
+    grid-template-columns: 1fr;
+
+    &:first-child {
+        @apply pt-0 border-t-0;
+    }
+
+    &:last-child {
+        @apply pb-0;
+    }
+
+    @variant tablet {
+        grid-template-columns: 1fr auto;
+    }
+}
+
+.rowMain {
+    h3 {
+        @apply m-0;
+
+        font-size: 17px;
+    }
+}
+
+.description {
+    @apply ui-status-note mt-1;
+}
+
+.rowActions {
+    @apply flex items-center gap-sm;
+}
+
+.state {
+    @apply ui-meta;
+}

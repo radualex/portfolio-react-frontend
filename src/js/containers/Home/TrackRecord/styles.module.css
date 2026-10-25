@@ -1,0 +1,32 @@
+@reference "../../../styles/global.css";
+
+.trackEyebrow {
+    @apply mb-11;
+}
+
+.grid3 {
+    @apply ui-grid-3;
+}
+
+.statNum {
+    @apply text-fg font-semibold;
+
+    font-family: var(--font-display);
+    font-size: clamp(52px, 7vw, 84px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+}
+
+.statUnit {
+    @apply ml-1 text-muted;
+
+    font-size: 0.42em;
+    letter-spacing: 0;
+}
+
+.statLabel {
+    @apply mt-3 mb-0 text-muted;
+
+    max-width: 30ch;
+    font-size: 14px;
+}

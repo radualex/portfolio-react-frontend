@@ -1,0 +1,9 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply ui-row mt-7 gap-md;
+}
+
+.actionsNote {
+    @apply ui-meta m-0;
+}

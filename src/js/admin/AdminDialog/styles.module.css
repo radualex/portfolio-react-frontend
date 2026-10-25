@@ -1,0 +1,30 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply p-0 border border-border rounded-card bg-surface text-fg;
+
+    width: min(900px, calc(100vw - 32px));
+    max-height: 90vh;
+
+    &::backdrop {
+        background: color-mix(in oklch, black 62%, transparent);
+    }
+}
+
+.head {
+    @apply ui-row-between py-4.5 px-6 border-b border-border;
+
+    h2 {
+        @apply text-[22px];
+    }
+}
+
+.body {
+    @apply p-6 overflow-y-auto;
+
+    max-height: calc(90vh - 73px);
+
+    > * + * {
+        @apply mt-md;
+    }
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { Project } from '@/store/types';

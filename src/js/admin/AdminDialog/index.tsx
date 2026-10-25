@@ -9,7 +9,7 @@ import { ButtonSize, ButtonVariant } from '@/components/Button/constants';
 import Button from '@/components/Button';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 export interface Props
     extends Omit<React.ComponentProps<'dialog'>, 'onClose' | 'title'> {

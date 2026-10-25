@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
 // Styles
-import '@/scss/global.scss';
+import '@/styles/global.css';
 
 import App from '@/App'; // eslint-disable-line @onefinity/eslint-config/import-grouping
 

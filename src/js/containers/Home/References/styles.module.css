@@ -1,0 +1,41 @@
+@reference "../../../styles/global.css";
+
+.referencesHead {
+    max-width: 50ch;
+}
+
+.grid3 {
+    @apply ui-grid-3;
+}
+
+.quoteCard {
+    @apply flex flex-col gap-4.5 m-0 border-t border-border pt-6;
+
+    blockquote {
+        @apply m-0 text-[21px] text-muted;
+
+        font-family: var(--font-display);
+        line-height: 1.42;
+        letter-spacing: -0.01em;
+
+        /* Muted and italic so an empty slot never reads as a real quote. */
+        font-style: italic;
+    }
+}
+
+.quoteAuthor {
+    @apply text-[14px] text-muted;
+
+    margin: auto 0 0;
+}
+
+.quotePending {
+    @apply py-0.75 px-2.5 rounded-full text-[11px] uppercase text-muted;
+
+    align-self: flex-start;
+
+    /* Dashed, not solid: the border itself says "placeholder". */
+    border: 1px dashed var(--border);
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+}

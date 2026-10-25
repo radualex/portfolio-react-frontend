@@ -7,7 +7,7 @@ import { DURATION } from './constants';
 import { ToastContext } from '@/components/Toast/ToastContext';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 export interface Props {
     children: ReactNode;

@@ -17,7 +17,7 @@ import { required } from '@/helpers/validators';
 import useFieldErrors from '@/hooks/useFieldErrors';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { Project, ProjectDraft } from '@/store/types';

@@ -18,7 +18,7 @@ import { formatDate } from '@/store/storage';
 import { useStore } from '@/store/StoreContext';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { GroupOption } from '@/components/ButtonGroup/types';

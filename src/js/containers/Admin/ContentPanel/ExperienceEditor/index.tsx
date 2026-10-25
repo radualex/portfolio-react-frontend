@@ -15,7 +15,7 @@ import { SKILL_SUGGESTIONS } from '@/store/defaults';
 import { uid } from '@/store/storage';
 
 // Styles
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 // Types
 import type { ExperienceContent, RoleItem } from '@/store/types';
