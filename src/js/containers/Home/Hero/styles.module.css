@@ -1,0 +1,49 @@
+@reference "../../../styles/global.css";
+
+.heroSplit {
+    @apply grid items-center;
+
+    grid-template-columns: 1fr;
+    gap: clamp(32px, 6vw, 80px);
+
+    @variant desktop {
+        grid-template-columns: 1.15fr 0.85fr;
+    }
+}
+
+.heroHeading {
+    margin-block: 4px 22px;
+}
+
+.heroCta {
+    @apply flex flex-wrap mt-8 gap-sm;
+}
+
+.portrait {
+    @apply w-full m-0;
+
+    order: -1;
+    justify-self: start;
+    max-width: 260px;
+
+    img {
+        @apply w-full rounded-card border border-border;
+
+        height: auto;
+    }
+
+    figcaption {
+        @apply ui-meta mt-3 text-left;
+    }
+
+    /* The portrait leads on narrow screens: a face beats a headline wrapped to four lines. */
+    @variant desktop {
+        order: 0;
+        justify-self: end;
+        max-width: 380px;
+
+        figcaption {
+            @apply text-right;
+        }
+    }
+}

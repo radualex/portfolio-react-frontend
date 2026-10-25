@@ -1,0 +1,109 @@
+/* Shared layout atoms ported from the old SCSS mixins. Modules `@apply` these. */
+
+@utility ui-container {
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+}
+
+@utility ui-stack {
+    display: flex;
+    flex-direction: column;
+
+    & > * + * {
+        margin-top: var(--gap-md);
+    }
+}
+
+@utility ui-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+@utility ui-row-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
+@utility ui-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap-lg);
+
+    @variant desktop {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@utility ui-grid-2-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: var(--gap-lg);
+
+    @variant desktop {
+        grid-template-columns: 1.35fr 1fr;
+        gap: var(--gap-xl);
+    }
+}
+
+@utility ui-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap-md);
+
+    @variant tablet {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@utility ui-card {
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+}
+
+@utility ui-lead {
+    max-width: 58ch;
+    margin: 0;
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+@utility ui-eyebrow {
+    margin: 0 0 var(--gap-md);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+@utility ui-meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-meta);
+    color: var(--muted);
+    letter-spacing: 0.02em;
+}
+
+@utility ui-num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+@utility ui-section-head {
+    max-width: 42ch;
+    margin-bottom: var(--gap-xl);
+}
+
+@utility ui-status-note {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}

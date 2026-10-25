@@ -1,0 +1,16 @@
+@reference "../../styles/global.css";
+
+/* Off-screen until focused, then it slides in; display:none would take it out of the tab order and defeat the point. */
+.root {
+    @apply
+        absolute z-50 left-3 rounded-base bg-accent py-2.5 px-4
+        text-[14px] text-bg font-semibold
+    ;
+
+    top: -60px;
+    transition: top 0.15s var(--ease);
+
+    &:focus {
+        @apply top-3;
+    }
+}

@@ -1,0 +1,21 @@
+@reference "../../../styles/global.css";
+
+.num {
+    @apply ui-num;
+}
+
+.previewBox {
+    @apply p-5.5 rounded-card bg-bg;
+
+    border: 1px dashed var(--border);
+}
+
+.previewLabel {
+    @apply ui-meta mb-3.5;
+}
+
+.previewNote {
+    @apply mt-3;
+
+    max-width: 42ch;
+}

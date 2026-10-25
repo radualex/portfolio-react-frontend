@@ -1,0 +1,9 @@
+@reference "../../../styles/global.css";
+
+.feedbackStack {
+    @apply ui-stack;
+}
+
+.feedbackSubmit {
+    @apply mt-5.5;
+}

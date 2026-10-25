@@ -1,0 +1,73 @@
+@reference "../../../styles/global.css";
+
+.root {
+    position: static;
+
+    @variant desktop {
+        @apply sticky;
+
+        top: 96px;
+    }
+}
+
+.channelsHeading {
+    @apply mb-4.5;
+}
+
+.channelList {
+    @apply m-0 p-0;
+}
+
+.channel {
+    @apply grid items-baseline gap-1 border-t border-border py-3.25 px-0;
+
+    grid-template-columns: 1fr;
+
+    &:last-child {
+        @apply border-b border-border;
+    }
+
+    dt {
+        @apply ui-meta m-0;
+    }
+
+    dd {
+        @apply m-0;
+
+        font-size: 15px;
+        overflow-wrap: anywhere;
+
+        a {
+            @apply pb-0.25 transition-colors duration-150 ease-base;
+
+            border-bottom: 1px solid var(--fg-line);
+
+            @media (hover: hover) {
+                &:hover {
+                    border-bottom-color: var(--fg);
+                }
+            }
+        }
+    }
+
+    @variant tablet {
+        @apply gap-3.5;
+
+        grid-template-columns: 90px 1fr;
+    }
+}
+
+.channelNote {
+    @apply mt-lg rounded-card border border-border bg-surface py-5 px-5.5;
+
+    ul {
+        @apply m-0 pl-4.5 text-muted;
+
+        font-size: 14px;
+        line-height: 1.75;
+    }
+}
+
+.channelNoteLabel {
+    @apply ui-meta mt-0 mb-2.5;
+}

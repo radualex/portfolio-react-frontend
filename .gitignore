@@ -1,1 +1,14 @@
+node_modules
+dist
+.vscode/
 .DS_Store
+*.local
+.env
+.env.*
+!.env.example
+.omo/
+# Local Netlify folder
+.netlify
+
+# Playwright browser artifacts
+.playwright-mcp/

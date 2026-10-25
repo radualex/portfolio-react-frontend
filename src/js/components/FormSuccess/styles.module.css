@@ -1,0 +1,15 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply py-4.5 px-5 rounded-base bg-live-soft text-fg;
+
+    border: 1px solid color-mix(in oklch, var(--live) 42%, transparent);
+}
+
+.successLabel {
+    @apply ui-meta m-0 mb-2 text-live;
+}
+
+.successBody {
+    @apply m-0 mb-4;
+}

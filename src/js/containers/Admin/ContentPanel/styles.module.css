@@ -1,0 +1,21 @@
+@reference "../../../styles/global.css";
+
+.fields {
+    @apply ui-form-grid;
+}
+
+.items {
+    @apply mt-md;
+}
+
+.item {
+    @apply py-4.5 border-t border-border;
+
+    &:first-child {
+        @apply pt-0 border-t-0;
+    }
+
+    &:last-child {
+        @apply pb-0;
+    }
+}

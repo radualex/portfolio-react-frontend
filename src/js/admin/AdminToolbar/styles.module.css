@@ -1,0 +1,55 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply
+        fixed z-30 inset-x-3 bottom-5
+        flex items-center justify-between p-1.5 border border-border
+        rounded-full gap-1
+    ;
+
+    background: color-mix(in oklch, var(--surface) 94%, transparent);
+    box-shadow: 0 16px 40px color-mix(in oklch, var(--bg) 70%, transparent);
+    backdrop-filter: blur(14px);
+
+    @variant tablet {
+        @apply left-auto right-5 justify-start;
+    }
+}
+
+.label {
+    @apply ui-meta hidden text-accent uppercase tracking-widest;
+
+    padding-inline: 10px;
+
+    @variant tablet {
+        @apply block;
+    }
+}
+
+.action {
+    @apply
+        inline-flex items-center py-2 px-2.25 border-0 rounded-full
+        gap-1.75 bg-transparent text-muted cursor-pointer
+    ;
+
+    font: inherit;
+    font-size: 13px;
+    transition:
+        color 0.15s var(--ease),
+        background 0.15s var(--ease);
+
+    @media (hover: hover) {
+        &:hover {
+            @apply text-fg bg-fg-soft;
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--accent-soft);
+        outline-offset: 1px;
+    }
+
+    @variant tablet {
+        padding-inline: 12px;
+    }
+}

@@ -1,0 +1,72 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply
+        inline-flex items-center gap-2.25 border border-border rounded-full
+        bg-transparent text-[12px] uppercase whitespace-nowrap text-muted
+    ;
+
+    padding: 6px 14px 6px 11px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+
+    &[data-state="available"] {
+        @apply bg-live-soft text-live;
+
+        border-color: color-mix(in oklch, var(--live) 42%, transparent);
+    }
+}
+
+.dot {
+    @apply relative flex-none size-2;
+
+    border-radius: 50%;
+    background: currentcolor;
+
+    /* The halo only breathes while he is actually available — motion as signal, not decoration. */
+    .root[data-state="available"] &::after {
+        @apply absolute;
+
+        content: "";
+        inset: -5px;
+        border-radius: 50%;
+        border: 1px solid currentcolor;
+        animation: halo 3s var(--ease) infinite;
+    }
+}
+
+@keyframes halo {
+    0%,
+    100% {
+        transform: scale(0.72);
+        opacity: 0.55;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 0;
+    }
+}
+
+.sm {
+    @apply text-[11px];
+
+    padding: 4px 11px 4px 9px;
+}
+
+/* The nav copy is redundant beside the hero one, so it yields first when space runs out. */
+.navOnly {
+    @apply hidden;
+
+    @variant tablet {
+        @apply inline-flex;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .root[data-state="available"] .dot::after {
+        transform: scale(0.95);
+        animation: none;
+        opacity: 0.55;
+    }
+}

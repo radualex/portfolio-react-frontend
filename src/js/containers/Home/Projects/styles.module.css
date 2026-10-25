@@ -1,0 +1,5 @@
+@reference "../../../styles/global.css";
+
+.grid3 {
+    @apply ui-grid-3;
+}

@@ -1,0 +1,7 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply ui-status-note;
+
+    max-width: 38ch;
+}

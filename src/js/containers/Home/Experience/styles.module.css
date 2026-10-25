@@ -1,0 +1,70 @@
+@reference "../../../styles/global.css";
+
+.experienceHead {
+    @apply ui-row-between items-end mb-9;
+}
+
+.experienceHeadText {
+    @apply mb-0;
+}
+
+.logRow {
+    @apply grid py-6.5 border-t border-border gap-2.5;
+
+    grid-template-columns: 1fr;
+    align-items: start;
+
+    &:last-child {
+        @apply border-b border-border;
+    }
+
+    h3 {
+        @apply text-[19px];
+    }
+
+    @variant desktop {
+        @apply gap-lg;
+
+        grid-template-columns: 168px 1fr 190px;
+    }
+}
+
+.period {
+    @apply ui-meta;
+}
+
+.org {
+    @apply mt-0.75 mb-2.5 text-muted text-[14px];
+}
+
+.what {
+    @apply m-0 text-muted text-[15px];
+
+    max-width: 54ch;
+}
+
+.pull {
+    @apply flex justify-start;
+
+    @variant desktop {
+        @apply justify-end;
+    }
+}
+
+.stackList {
+    @apply flex flex-wrap p-0 m-0 gap-1.5;
+
+    list-style: none;
+}
+
+.education {
+    @apply ui-meta pt-md mt-xl leading-[1.8];
+
+    max-width: 90ch;
+
+    strong {
+        @apply text-fg tracking-normal;
+
+        font-family: var(--font-body);
+    }
+}

@@ -1,0 +1,16 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply relative border-t border-border;
+
+    /* Sections are separate components, so each owns its top rule and <main>'s first child suppresses it. */
+    padding-block: clamp(52px, 7vw, var(--gap-2xl));
+
+    &:first-child {
+        @apply border-t-0;
+    }
+}
+
+.hero {
+    padding-block: clamp(56px, 9vw, 120px);
+}

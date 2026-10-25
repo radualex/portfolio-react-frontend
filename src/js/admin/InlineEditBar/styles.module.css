@@ -1,0 +1,32 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply fixed flex items-center justify-between gap-2 rounded-full border border-border p-2;
+
+    z-index: 31;
+    right: 12px;
+    bottom: 80px;
+    left: 12px;
+    background: color-mix(in oklch, var(--surface) 94%, transparent);
+    box-shadow: 0 16px 40px color-mix(in oklch, var(--bg) 70%, transparent);
+    backdrop-filter: blur(14px);
+
+    @variant tablet {
+        @apply justify-start;
+
+        left: auto;
+        right: 20px;
+        bottom: 84px;
+    }
+}
+
+.label {
+    @apply ui-meta hidden text-accent uppercase;
+
+    padding-inline: 8px;
+    letter-spacing: 0.1em;
+
+    @variant tablet {
+        @apply block;
+    }
+}

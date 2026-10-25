@@ -1,0 +1,46 @@
+@reference "../../styles/global.css";
+
+/* The prototype had .segmented and .tabs, which differed only in typography and whether a count was shown. */
+.root {
+    @apply inline-flex p-1 border border-border rounded-full gap-1 bg-bg;
+
+    button {
+        @apply border-0 rounded-full bg-transparent text-muted;
+
+        transition:
+            background 0.15s var(--ease),
+            color 0.15s var(--ease);
+
+        @media (hover: hover) {
+            &:hover {
+                @apply bg-fg-soft text-fg;
+            }
+        }
+
+        /* Inverted fill rather than an accent fill: these sit inside panels that already
+           carry the admin accent in the bar above. */
+        &[aria-pressed="true"] {
+            @apply bg-fg text-bg;
+        }
+    }
+}
+
+.segmented {
+    button {
+        @apply min-h-9.5 py-2.25 px-4.5 text-[12px] tracking-[0.08em] uppercase;
+
+        font-family: var(--font-mono);
+    }
+}
+
+.tabs {
+    @apply flex-wrap;
+
+    button {
+        @apply inline-flex items-center min-h-9 py-1.75 px-3.75 text-meta font-medium gap-1.75;
+    }
+}
+
+.count {
+    @apply ui-num text-[11px] opacity-75;
+}

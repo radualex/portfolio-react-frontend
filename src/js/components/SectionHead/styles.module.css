@@ -1,0 +1,9 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply ui-section-head;
+
+    h2 + p {
+        @apply mt-3.5;
+    }
+}

@@ -1,0 +1,54 @@
+@reference "../../styles/global.css";
+
+.root {
+    @apply flex flex-col p-6 border border-border rounded-card gap-2.5 bg-surface;
+
+    transition:
+        border-color 0.15s var(--ease),
+        background 0.15s var(--ease);
+
+    @media (hover: hover) {
+        &:hover {
+            @apply border-fg-line;
+
+            background: color-mix(in oklch, var(--surface) 88%, white);
+        }
+    }
+
+    p {
+        @apply m-0 text-muted text-[15px];
+    }
+}
+
+.top {
+    @apply flex items-baseline justify-between gap-3;
+}
+
+.kind {
+    @apply ui-meta;
+}
+
+.foot {
+    @apply flex justify-between items-center pt-3.5 mt-auto gap-3;
+
+    /* margin-top:auto pins the footer down so cards in a row align their links despite
+       different description lengths. */
+}
+
+.stack {
+    @apply ui-meta;
+}
+
+.link {
+    @apply text-[14px] font-semibold underline transition-colors duration-150 ease-base;
+
+    text-decoration-color: var(--fg-line);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+
+    @media (hover: hover) {
+        &:hover {
+            text-decoration-color: var(--fg);
+        }
+    }
+}

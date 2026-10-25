@@ -1,0 +1,26 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[dev]
+  command = "npm run start"
+  framework = "#custom"
+  targetPort = 3000
+  port = 8888
+
+# Client-side routing: /contact and /admin are not files on disk, so a direct
+# load or a refresh on either has to be answered with index.html. Status 200
+# rather than 301 so the URL the visitor typed is the URL they keep.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# /admin is gated by HTTP Basic Auth; the credential is the ADMIN_CREDENTIALS env var (Functions scope).
+[[edge_functions]]
+  path = "/admin"
+  function = "admin-auth"
+
+[[edge_functions]]
+  path = "/admin/*"
+  function = "admin-auth"
