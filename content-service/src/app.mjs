@@ -121,7 +121,6 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
     };
 
     const sendUnauthorized = (response) => {
-        response.setHeader('WWW-Authenticate', 'Basic realm="Admin", charset="UTF-8"');
         send(response, 401, { error: 'Authentication required' });
     };
 

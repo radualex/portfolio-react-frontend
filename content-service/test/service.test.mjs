@@ -292,3 +292,10 @@ test('PUT /api/content/inbox replaces the array and requires auth', async () => 
 
     assert.deepEqual(await list.json(), replacement);
 });
+
+test('401 answers without an auth challenge so a wrong credential cannot loop the browser', async () => {
+    const response = await fetch(`${base}/api/content/inbox`);
+
+    assert.equal(response.status, 401);
+    assert.equal(response.headers.get('www-authenticate'), null);
+});
