@@ -5,8 +5,19 @@ import { join } from 'node:path';
 
 const MAX_BODY = 1024 * 1024;
 const MAX_INBOX = 500;
+const RATE_WINDOW_MS = 10_000;
+const RATE_MAX_KEYS = 5000;
+const MESSAGE_TYPES = ['enquiry', 'feedback'];
+const MESSAGE_FIELDS = {
+    type: 32,
+    name: 120,
+    email: 200,
+    subject: 200,
+    body: 5000,
+    detail: 500
+};
 
-export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY }) => {
+export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, rateWindowMs = RATE_WINDOW_MS }) => {
     const contentFile = join(dataDir, 'content.json');
     const inboxFile = join(dataDir, 'inbox.json');
     const expectedAuth = credentials ? `Basic ${Buffer.from(credentials).toString('base64')}` : '';
@@ -100,6 +111,58 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY })
 
     const isRecord = (value) => {
         return typeof value === 'object' && value !== null && !Array.isArray(value);
+    };
+
+    /* Traefik appends the peer, so the last X-Forwarded-For hop is the one it saw. */
+    const clientKey = (request) => {
+        const forwarded = request.headers['x-forwarded-for'];
+
+        if (typeof forwarded === 'string' && forwarded.length > 0) {
+            const hops = forwarded.split(',');
+
+            return hops[hops.length - 1].trim();
+        }
+
+        return request.socket.remoteAddress ?? 'unknown';
+    };
+
+    const lastSeen = new Map();
+
+    const isThrottled = (request) => {
+        const now = Date.now();
+        const key = clientKey(request);
+        const previous = lastSeen.get(key) ?? 0;
+
+        if (now - previous < rateWindowMs) {
+            return true;
+        }
+
+        lastSeen.set(key, now);
+
+        if (lastSeen.size > RATE_MAX_KEYS) {
+            for (const [entry, at] of lastSeen) {
+                if (now - at >= RATE_WINDOW_MS) {
+                    lastSeen.delete(entry);
+                }
+            }
+        }
+
+        return false;
+    };
+
+    /* Whitelist: a caller cannot set id/at/read/archived or grow the document unbounded. */
+    const toMessage = (draft) => {
+        const message = {};
+
+        for (const [field, limit] of Object.entries(MESSAGE_FIELDS)) {
+            const value = draft[field];
+
+            if (typeof value === 'string') {
+                message[field] = value.trim().slice(0, limit);
+            }
+        }
+
+        return message;
     };
 
     const applyCors = (request, response) => {
@@ -212,24 +275,45 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY })
                 }
 
                 if (request.method === 'POST') {
+                    if (isThrottled(request)) {
+                        response.setHeader('Retry-After', String(Math.ceil(rateWindowMs / 1000)));
+                        send(response, 429, { error: 'Too many messages' });
+
+                        return;
+                    }
+
                     const draft = await parseBody(request, response);
 
                     if (!draft) {
                         return;
                     }
 
-                    const message = {
+                    const message = toMessage(draft);
+
+                    if (!MESSAGE_TYPES.includes(message.type)) {
+                        send(response, 400, { error: 'Unknown message type' });
+
+                        return;
+                    }
+
+                    if (!message.body) {
+                        send(response, 400, { error: 'Message body is required' });
+
+                        return;
+                    }
+
+                    const record = {
+                        ...message,
                         id: randomUUID(),
                         at: new Date().toISOString(),
                         read: false,
-                        archived: false,
-                        ...draft
+                        archived: false
                     };
 
                     await enqueue(async () => {
                         const inbox = await readJson(inboxFile, []);
 
-                        inbox.unshift(message);
+                        inbox.unshift(record);
                         await writeJson(inboxFile, inbox.slice(0, MAX_INBOX));
                     });
                     send(response, 201, { ok: true });
