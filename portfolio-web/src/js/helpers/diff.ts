@@ -1,3 +1,5 @@
+import { isArray, isPlainObject, keys, sortBy, toPairs, toString, transform, uniq } from 'lodash-es';
+
 // Types
 import type { SiteContent } from '@/store/types';
 
@@ -9,34 +11,28 @@ export interface Change {
 
 type Leaves = Record<string, string>;
 
-const flatten = (value: unknown, prefix: string): Leaves => {
-    if (Array.isArray(value)) {
-        return value.reduce<Leaves>((leaves, item, index) => {
-            return {
-                ...leaves,
-                ...flatten(item, `${prefix}.${index}`)
-            };
-        }, {});
+const isBranch = (value: unknown): value is object => {
+    return isArray(value) || isPlainObject(value);
+};
+
+const flatten = (value: unknown, prefix = ''): Leaves => {
+    if (!isBranch(value)) {
+        return {
+            [prefix]: toString(value)
+        };
     }
 
-    if (value && typeof value === 'object') {
-        return Object.entries(value).reduce<Leaves>((leaves, [key, item]) => {
-            return {
-                ...leaves,
-                ...flatten(item, prefix ? `${prefix}.${key}` : key)
-            };
-        }, {});
-    }
+    return transform(toPairs(value), (leaves: Leaves, [key, child]) => {
+        const path = prefix ? `${prefix}.${key}` : key;
 
-    return {
-        [prefix]: typeof value === 'string' ? value : String(value)
-    };
+        Object.assign(leaves, flatten(child, path));
+    }, {} as Leaves);
 };
 
 export const diffContent = (mine: SiteContent, theirs: SiteContent): Change[] => {
-    const mineLeaves = flatten(mine, '');
-    const theirsLeaves = flatten(theirs, '');
-    const paths = [...new Set([...Object.keys(mineLeaves), ...Object.keys(theirsLeaves)])].toSorted();
+    const mineLeaves = flatten(mine);
+    const theirsLeaves = flatten(theirs);
+    const paths = sortBy(uniq([...keys(mineLeaves), ...keys(theirsLeaves)]));
 
     return paths
         .filter((path) => {
