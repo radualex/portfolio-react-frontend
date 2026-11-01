@@ -6,9 +6,10 @@ import type { EditorTarget } from './constants';
 
 // Components
 import AdminToolbar from './AdminToolbar';
-import { AdminModeContext, type AdminModeValue, type AdminStatus } from './AdminModeContext';
+import { AdminModeContext } from './AdminModeContext';
 import { checkAdminAuth } from './auth';
 import { readAdminFlag, writeAdminFlag } from './storage';
+import type { AdminModeValue, AdminStatus } from './types';
 
 // Store
 import { useStore } from '@/store/StoreContext';

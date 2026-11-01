@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 // Constants
 import type { AvailabilityState, MessageType, SectionKey } from './constants';
 
@@ -214,4 +216,8 @@ export interface StoreValue {
     setContent: (next: SiteContent) => Promise<SaveOutcome>;
     resolveConflict: (choice: 'discard' | 'overwrite') => Promise<void>;
     toggleSection: (key: SectionKey) => void;
+}
+
+export interface StoreProviderProps {
+    children: ReactNode;
 }

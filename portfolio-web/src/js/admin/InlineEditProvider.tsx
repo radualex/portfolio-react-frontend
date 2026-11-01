@@ -6,9 +6,10 @@ import ContentConflictDialog from './ContentConflictDialog';
 import InlineEditBar from './InlineEditBar';
 import { useToast } from '@/components/Toast/ToastContext';
 import { useAdminMode } from './AdminModeContext';
-import { InlineEditContext, type EditScope, type InlineEditValue } from './InlineEditContext';
+import { InlineEditContext } from './InlineEditContext';
 import { setByPath } from './paths';
 import { readAutoEditFlag, writeAutoEditFlag } from './storage';
+import type { EditingSectionAction, EditScope, InlineEditValue } from './types';
 
 // Store
 import { useStore } from '@/store/StoreContext';
@@ -17,8 +18,6 @@ import type { SiteContent } from '@/store/types';
 export interface Props {
     children: ReactNode;
 }
-
-type EditingSectionAction = { type: 'clear'; } | { type: 'clearUnlessSite'; } | { type: 'scope'; scope: EditScope; };
 
 const editingSectionReducer = (current: EditScope | undefined, action: EditingSectionAction): EditScope | undefined => {
     switch (action.type) {

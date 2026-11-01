@@ -21,10 +21,8 @@ import { SKILL_SUGGESTIONS } from '@/store/defaults';
 import styles from '../styles.module.css';
 
 // Types
-import type { CapabilityItem, SiteContent } from '@/store/types';
+import type { CapabilitiesContent, CapabilityItem } from '@/store/types';
 import type { TextKey } from '../types';
-
-type CapabilitiesContent = SiteContent['capabilities'];
 
 export interface Props {
     active?: ContentSection;

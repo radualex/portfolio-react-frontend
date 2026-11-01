@@ -17,10 +17,8 @@ import { fieldPatch } from '../helpers';
 import styles from '../styles.module.css';
 
 // Types
-import type { ReferenceItem, SiteContent } from '@/store/types';
+import type { ReferenceItem, ReferencesContent } from '@/store/types';
 import type { TextKey } from '../types';
-
-type ReferencesContent = SiteContent['references'];
 
 export interface Props {
     active?: ContentSection;

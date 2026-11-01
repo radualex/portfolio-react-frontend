@@ -17,10 +17,8 @@ import { fieldPatch, toList } from '../helpers';
 import styles from '../styles.module.css';
 
 // Types
-import type { ChannelItem, SiteContent } from '@/store/types';
+import type { ChannelItem, ContactContent } from '@/store/types';
 import type { TextKey } from '../types';
-
-type ContactContent = SiteContent['contact'];
 
 export interface Props {
     active?: ContentSection;

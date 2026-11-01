@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // Store
 import { appendMessage, ContentConflict, loadContent, loadInbox, saveContent, saveInbox } from '@/store/remote';
 import { StoreContext } from '@/store/StoreContext';
 import { readState, STORAGE_KEY, uid, writeState } from '@/store/storage';
-import type { Message, PortfolioState, Project, SaveOutcome, SiteContent, StoreValue, SyncStatus } from '@/store/types';
-
-export interface StoreProviderProps {
-    children: ReactNode;
-}
+import type { Message, PortfolioState, Project, SaveOutcome, SiteContent, StoreProviderProps, StoreValue, SyncStatus } from '@/store/types';
 
 const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }) => {
     const [state, setState] = useState<PortfolioState>(readState);
