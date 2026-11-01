@@ -140,23 +140,25 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
     }, [applyLocal, conflict]);
 
     const refreshInbox = useCallback(async () => {
+        let messages: Message[] | undefined;
+
         try {
-            const messages = await loadInbox();
-
-            if (!messages) {
-                return;
-            }
-
-            const next = {
-                ...stateRef.current,
-                inbox: messages as Message[]
-            };
-
-            stateRef.current = next;
-            setState(next);
+            messages = await loadInbox();
         } catch {
-            /* The inbox is admin-only; a failure must not break the page. */
+            return;
         }
+
+        if (!messages) {
+            return;
+        }
+
+        const next = {
+            ...stateRef.current,
+            inbox: messages
+        };
+
+        stateRef.current = next;
+        setState(next);
     }, []);
 
     const value = useMemo<StoreValue>(() => {

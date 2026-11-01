@@ -20,15 +20,20 @@
     @apply ui-meta;
 }
 
-.saved {
-    @apply text-muted;
+.saved,
+.mine {
+    @apply flex items-baseline gap-2;
 }
 
-.mine {
+.tag {
+    @apply ui-meta;
+}
+
+.value {
     @apply text-fg;
 }
 
-.arrow {
+.saved .value {
     @apply text-muted;
 }
 

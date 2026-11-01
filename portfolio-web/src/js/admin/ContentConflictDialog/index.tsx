@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 // Constants
+import { EMPTY_VALUE } from './constants';
 import { ButtonSize, ButtonVariant } from '@/components/Button/constants';
 
 // Components
@@ -10,16 +11,13 @@ import { useToast } from '@/components/Toast/ToastContext';
 
 // Helpers
 import { diffContent } from '@/helpers/diff';
+import { formatPath } from './helpers';
 
 // Store
 import { useStore } from '@/store/StoreContext';
 
 // Styles
 import styles from './styles.module.css';
-
-const formatPath = (path: string): string => {
-    return path.replaceAll('.', ' · ');
-};
 
 const ContentConflictDialog: React.FunctionComponent = () => {
     const { conflict, resolveConflict } = useStore();
@@ -40,29 +38,28 @@ const ContentConflictDialog: React.FunctionComponent = () => {
     }
 
     const changes = diffContent(conflict.mine, conflict.theirs);
+    const fieldLabel = `${changes.length} differing field${changes.length === 1 ? '' : 's'}`;
+    const lead = `Different content was saved while you were editing. Review the ${fieldLabel}, then choose which version to keep.`;
 
     return (
         <AdminDialog title="Content changed elsewhere" onClose={handleKeepSaved}>
-            <p className={styles.lead}>
-                Different content was saved while you were editing. Review the
-                {' '}
-                {changes.length}
-                {' '}
-                differing field
-                {changes.length === 1 ? '' : 's'}
-                , then choose which version to keep.
-            </p>
+            <p className={styles.lead}>{lead}</p>
 
             <ul className={styles.list}>
                 {changes.map((change) => {
                     return (
                         <li className={styles.row} key={change.path}>
                             <span className={styles.path}>{formatPath(change.path)}</span>
-                            <span className={styles.saved}>{change.theirs || '(empty)'}</span>
-                            <span className={styles.arrow} aria-hidden>
-                                &darr; saved &nbsp; &uarr; yours
+
+                            <span className={styles.saved}>
+                                <span className={styles.tag}>saved</span>
+                                <span className={styles.value}>{change.theirs || EMPTY_VALUE}</span>
                             </span>
-                            <span className={styles.mine}>{change.mine || '(empty)'}</span>
+
+                            <span className={styles.mine}>
+                                <span className={styles.tag}>yours</span>
+                                <span className={styles.value}>{change.mine || EMPTY_VALUE}</span>
+                            </span>
                         </li>
                     );
                 })}

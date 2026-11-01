@@ -51,8 +51,6 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
         }
     };
 
-    /* The stored text is the version, so any writer that changed the file invalidates
-       every ETag taken before it. Survives restarts without a separate counter. */
     const readText = async (file) => {
         try {
             return await readFile(file, 'utf8');
@@ -122,7 +120,6 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
         response.end(JSON.stringify(body));
     };
 
-    /* Same realm as the /admin gate so a browser reuses one credential for both. */
     const sendUnauthorized = (response) => {
         response.setHeader('WWW-Authenticate', 'Basic realm="Admin", charset="UTF-8"');
         send(response, 401, { error: 'Authentication required' });
@@ -141,7 +138,6 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
         return typeof value === 'object' && value !== null && !Array.isArray(value);
     };
 
-    /* Traefik appends the peer, so the last X-Forwarded-For hop is the one it saw. */
     const clientKey = (request) => {
         const forwarded = request.headers['x-forwarded-for'];
 
@@ -178,7 +174,6 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
         return false;
     };
 
-    /* Whitelist: a caller cannot set id/at/read/archived or grow the document unbounded. */
     const toMessage = (draft) => {
         const message = {};
 

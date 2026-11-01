@@ -43,7 +43,6 @@ export const seededState = (): PortfolioState => {
     return clone(DEFAULT_STATE);
 };
 
-/* Missing sections fall back to the built-in copy so a partial document never blanks the site. */
 export const normalizeContent = (content: Partial<SiteContent> | undefined): SiteContent => {
     const defaults = clone(DEFAULT_STATE.content);
 

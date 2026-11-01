@@ -1,21 +1,9 @@
 // Store
+import { CONTENT_PATH } from './constants';
 import { normalizeContent } from './storage';
 
 // Types
-import type { MessageDraft, SiteContent } from './types';
-
-const BASE = '/api';
-
-export interface Snapshot {
-    content: SiteContent;
-    version: string;
-}
-
-export interface Conflict {
-    mine: SiteContent;
-    theirs: SiteContent;
-    version: string;
-}
+import type { ConflictState, Message, MessageDraft, SiteContent, Snapshot } from './types';
 
 interface ConflictBody {
     current: SiteContent;
@@ -23,9 +11,9 @@ interface ConflictBody {
 }
 
 export class ContentConflict extends Error {
-    readonly conflict: Conflict;
+    readonly conflict: ConflictState;
 
-    constructor(conflict: Conflict) {
+    constructor(conflict: ConflictState) {
         super('The content changed on the server.');
 
         this.name = 'ContentConflict';
@@ -38,7 +26,7 @@ const readTag = (response: Response): string => {
 };
 
 export const loadContent = async (): Promise<Snapshot | undefined> => {
-    const response = await fetch(`${BASE}/content`, {
+    const response = await fetch(`${CONTENT_PATH}/content`, {
         cache: 'no-store',
         credentials: 'same-origin'
     });
@@ -48,7 +36,7 @@ export const loadContent = async (): Promise<Snapshot | undefined> => {
     }
 
     if (!response.ok) {
-        throw new Error(`GET ${BASE}/content answered ${response.status}`);
+        throw new Error(`GET ${CONTENT_PATH}/content answered ${response.status}`);
     }
 
     return {
@@ -66,7 +54,7 @@ export const saveContent = async (content: SiteContent, version: string): Promis
         headers['If-Match'] = `"${version}"`;
     }
 
-    const response = await fetch(`${BASE}/content`, {
+    const response = await fetch(`${CONTENT_PATH}/content`, {
         method: 'PUT',
         cache: 'no-store',
         credentials: 'same-origin',
@@ -85,14 +73,14 @@ export const saveContent = async (content: SiteContent, version: string): Promis
     }
 
     if (!response.ok) {
-        throw new Error(`PUT ${BASE}/content answered ${response.status}`);
+        throw new Error(`PUT ${CONTENT_PATH}/content answered ${response.status}`);
     }
 
     return readTag(response);
 };
 
-export const loadInbox = async (): Promise<MessageDraft[] | undefined> => {
-    const response = await fetch(`${BASE}/content/inbox`, {
+export const loadInbox = async (): Promise<Message[] | undefined> => {
+    const response = await fetch(`${CONTENT_PATH}/content/inbox`, {
         cache: 'no-store',
         credentials: 'same-origin'
     });
@@ -102,14 +90,14 @@ export const loadInbox = async (): Promise<MessageDraft[] | undefined> => {
     }
 
     if (!response.ok) {
-        throw new Error(`GET ${BASE}/content/inbox answered ${response.status}`);
+        throw new Error(`GET ${CONTENT_PATH}/content/inbox answered ${response.status}`);
     }
 
     return await response.json();
 };
 
 export const appendMessage = async (draft: MessageDraft): Promise<void> => {
-    const response = await fetch(`${BASE}/content/inbox`, {
+    const response = await fetch(`${CONTENT_PATH}/content/inbox`, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -119,12 +107,12 @@ export const appendMessage = async (draft: MessageDraft): Promise<void> => {
     });
 
     if (!response.ok) {
-        throw new Error(`POST ${BASE}/content/inbox answered ${response.status}`);
+        throw new Error(`POST ${CONTENT_PATH}/content/inbox answered ${response.status}`);
     }
 };
 
 export const saveInbox = async (messages: unknown[]): Promise<void> => {
-    const response = await fetch(`${BASE}/content/inbox`, {
+    const response = await fetch(`${CONTENT_PATH}/content/inbox`, {
         method: 'PUT',
         credentials: 'same-origin',
         headers: {
@@ -134,6 +122,6 @@ export const saveInbox = async (messages: unknown[]): Promise<void> => {
     });
 
     if (!response.ok) {
-        throw new Error(`PUT ${BASE}/content/inbox answered ${response.status}`);
+        throw new Error(`PUT ${CONTENT_PATH}/content/inbox answered ${response.status}`);
     }
 };

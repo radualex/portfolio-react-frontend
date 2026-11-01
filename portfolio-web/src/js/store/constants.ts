@@ -1,3 +1,5 @@
+export const CONTENT_PATH = '/api';
+
 export enum AvailabilityState {
     Available = 'available',
     Unavailable = 'unavailable'

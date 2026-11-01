@@ -177,3 +177,8 @@ export interface ConflictState {
     theirs: SiteContent;
     version: string;
 }
+
+export interface Snapshot {
+    content: SiteContent;
+    version: string;
+}

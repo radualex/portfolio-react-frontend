@@ -4,7 +4,6 @@ WORKDIR /app
 
 COPY content-service/ /app/
 
-# The volume inherits this path's ownership, so the process never writes as root.
 RUN mkdir -p /data && chown node:node /data
 
 ENV NODE_ENV=production
