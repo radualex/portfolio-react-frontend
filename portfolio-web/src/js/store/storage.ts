@@ -43,6 +43,54 @@ export const seededState = (): PortfolioState => {
     return clone(DEFAULT_STATE);
 };
 
+/* Missing sections fall back to the built-in copy so a partial document never blanks the site. */
+export const normalizeContent = (content: Partial<SiteContent> | undefined): SiteContent => {
+    const defaults = clone(DEFAULT_STATE.content);
+
+    if (!content) {
+        return migrateContent(defaults);
+    }
+
+    return migrateContent({
+        hero: {
+            ...defaults.hero,
+            ...content.hero
+        },
+        capabilities: {
+            ...defaults.capabilities,
+            ...content.capabilities
+        },
+        trackRecord: {
+            ...defaults.trackRecord,
+            ...content.trackRecord
+        },
+        experience: {
+            ...defaults.experience,
+            ...content.experience
+        },
+        projects: {
+            ...defaults.projects,
+            ...content.projects
+        },
+        references: {
+            ...defaults.references,
+            ...content.references
+        },
+        closingCta: {
+            ...defaults.closingCta,
+            ...content.closingCta
+        },
+        contact: {
+            ...defaults.contact,
+            ...content.contact
+        },
+        footer: {
+            ...defaults.footer,
+            ...content.footer
+        }
+    });
+};
+
 export const readState = (): PortfolioState => {
     let raw: string | undefined;
 
@@ -58,51 +106,12 @@ export const readState = (): PortfolioState => {
 
     try {
         const parsed = JSON.parse(raw) as Partial<PortfolioState>;
-        const defaults = clone(DEFAULT_STATE.content);
-        const content = parsed.content;
 
         return {
             availability: parsed.availability ?? clone(DEFAULT_STATE.availability),
             projects: Array.isArray(parsed.projects) ? parsed.projects : clone(DEFAULT_STATE.projects),
             inbox: Array.isArray(parsed.inbox) ? parsed.inbox : [],
-            content: migrateContent(content ? {
-                hero: {
-                    ...defaults.hero,
-                    ...content.hero
-                },
-                capabilities: {
-                    ...defaults.capabilities,
-                    ...content.capabilities
-                },
-                trackRecord: {
-                    ...defaults.trackRecord,
-                    ...content.trackRecord
-                },
-                experience: {
-                    ...defaults.experience,
-                    ...content.experience
-                },
-                projects: {
-                    ...defaults.projects,
-                    ...content.projects
-                },
-                references: {
-                    ...defaults.references,
-                    ...content.references
-                },
-                closingCta: {
-                    ...defaults.closingCta,
-                    ...content.closingCta
-                },
-                contact: {
-                    ...defaults.contact,
-                    ...content.contact
-                },
-                footer: {
-                    ...defaults.footer,
-                    ...content.footer
-                }
-            } : defaults),
+            content: normalizeContent(parsed.content),
             sections: {
                 ...clone(DEFAULT_STATE.sections),
                 ...parsed.sections

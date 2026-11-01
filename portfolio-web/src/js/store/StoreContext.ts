@@ -4,7 +4,7 @@ import { createContext, useContext } from 'react';
 import type { SectionKey } from '@/store/constants';
 
 // Types
-import type { Availability, Message, MessageDraft, PortfolioState, Project, ProjectDraft, ProjectUpdate, SiteContent } from '@/store/types';
+import type { Availability, ConflictState, Message, MessageDraft, PortfolioState, Project, ProjectDraft, ProjectUpdate, SaveOutcome, SiteContent, SyncStatus } from '@/store/types';
 
 export interface ProjectListOptions {
     includeHidden?: boolean;
@@ -12,6 +12,9 @@ export interface ProjectListOptions {
 
 export interface StoreValue {
     state: PortfolioState;
+    sync: SyncStatus;
+    canEdit: boolean;
+    conflict: ConflictState | undefined;
     projects: (options?: ProjectListOptions) => Project[];
     unreadCount: number;
 
@@ -21,11 +24,13 @@ export interface StoreValue {
     removeProject: (id: string) => void;
     moveProject: (id: string, delta: number) => void;
 
-    addMessage: (draft: MessageDraft) => void;
+    addMessage: (draft: MessageDraft) => Promise<boolean>;
     updateMessage: (id: string, patch: Partial<Message>) => void;
     removeMessage: (id: string) => void;
+    refreshInbox: () => Promise<void>;
 
-    setContent: (next: SiteContent) => void;
+    setContent: (next: SiteContent) => Promise<SaveOutcome>;
+    resolveConflict: (choice: 'discard' | 'overwrite') => Promise<void>;
     toggleSection: (key: SectionKey) => void;
 }
 

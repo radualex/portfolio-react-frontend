@@ -1,0 +1,39 @@
+@reference "../../styles/global.css";
+
+.lead {
+    @apply ui-status-note;
+}
+
+.list {
+    @apply ui-stack;
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.row {
+    @apply grid gap-1 border-b border-border pb-2;
+}
+
+.path {
+    @apply ui-meta;
+}
+
+.saved {
+    @apply text-muted;
+}
+
+.mine {
+    @apply text-fg;
+}
+
+.arrow {
+    @apply text-muted;
+}
+
+.actions {
+    @apply ui-row;
+
+    justify-content: flex-end;
+}

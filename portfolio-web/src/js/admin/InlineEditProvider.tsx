@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useReducer, useRef, type ReactN
 import { useLocation } from 'react-router-dom';
 
 // Components
+import ContentConflictDialog from './ContentConflictDialog';
 import InlineEditBar from './InlineEditBar';
 import { useToast } from '@/components/Toast/ToastContext';
 import { useAdminMode } from './AdminModeContext';
@@ -43,7 +44,7 @@ const draftReducer = (_current: SiteContent, next: SiteContent): SiteContent => 
 };
 
 const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
-    const { state, setContent } = useStore();
+    const { state, setContent, canEdit } = useStore();
     const { isAdmin } = useAdminMode();
     const toast = useToast();
     const location = useLocation();
@@ -73,6 +74,12 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
             return;
         }
 
+        if (!canEdit) {
+            toast('Editing needs a live connection to the content service');
+
+            return;
+        }
+
         const next = structuredClone(state.content);
 
         draftRef.current = next;
@@ -81,16 +88,16 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
             type: 'scope',
             scope
         });
-    }, [isAdmin, state.content]);
+    }, [canEdit, isAdmin, state.content, toast]);
 
     useEffect(() => {
-        if (!isAdmin || !readAutoEditFlag()) {
+        if (!isAdmin || !canEdit || !readAutoEditFlag()) {
             return;
         }
 
         writeAutoEditFlag(false);
         start('site');
-    }, [isAdmin, location.pathname, start]);
+    }, [canEdit, isAdmin, location.pathname, start]);
 
     const update = useCallback((path: string, value: string) => {
         const next = setByPath(draftRef.current, path, value) as SiteContent;
@@ -99,17 +106,30 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
         dispatchDraft(next);
     }, []);
 
-    const save = useCallback(() => {
+    const save = useCallback(async () => {
         if (!editingSection) {
             return;
         }
 
-        setContent(draftRef.current);
-        toast('Section saved');
-        dispatchEditingSection({
-            type: 'clear'
-        });
+        const outcome = await setContent(draftRef.current);
+
+        if (outcome === 'saved') {
+            toast('Section saved');
+            dispatchEditingSection({
+                type: 'clear'
+            });
+
+            return;
+        }
+
+        if (outcome === 'error') {
+            toast('Could not save — the content service is unreachable');
+        }
     }, [editingSection, setContent, toast]);
+
+    const handleSave = useCallback(() => {
+        void save();
+    }, [save]);
 
     const cancel = useCallback(() => {
         dispatchEditingSection({
@@ -125,15 +145,16 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
             editingSection,
             start,
             update,
-            save,
+            save: handleSave,
             cancel
         };
-    }, [content, editingSection, start, update, save, cancel]);
+    }, [content, editingSection, handleSave, start, update, cancel]);
 
     return (
         <InlineEditContext value={value}>
             {children}
             {editingSection && <InlineEditBar />}
+            <ContentConflictDialog />
         </InlineEditContext>
     );
 };

@@ -3,13 +3,26 @@ import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 
+/* Dev only: stands in for the credential a browser reuses after logging in at /admin. */
+const developmentCredentials = process.env.DEV_ADMIN_CREDENTIALS ?? 'admin:dev';
+const basicAuth = Buffer.from(developmentCredentials).toString('base64'); // eslint-disable-line unicorn/prefer-uint8array-base64 -- Uint8Array#toBase64 is absent from every TS lib target
+
 export default defineConfig({
     plugins: [
         react(),
         tailwindcss()
     ],
     server: {
-        port: 3000
+        port: 3000,
+        proxy: {
+            '/api': {
+                target: 'http://localhost:4000',
+                changeOrigin: false,
+                headers: {
+                    Authorization: `Basic ${basicAuth}`
+                }
+            }
+        }
     },
     resolve: {
         alias: {

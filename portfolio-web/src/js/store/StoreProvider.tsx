@@ -1,10 +1,10 @@
-import type React from 'react';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 // Store
+import { appendMessage, ContentConflict, loadContent, loadInbox, saveContent, saveInbox } from '@/store/remote';
 import { StoreContext, type StoreValue } from '@/store/StoreContext';
 import { readState, STORAGE_KEY, uid, writeState } from '@/store/storage';
-import type { Message, PortfolioState, Project } from '@/store/types';
+import type { Message, PortfolioState, Project, SaveOutcome, SiteContent, SyncStatus } from '@/store/types';
 
 export interface StoreProviderProps {
     children: ReactNode;
@@ -12,9 +12,53 @@ export interface StoreProviderProps {
 
 const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }) => {
     const [state, setState] = useState<PortfolioState>(readState);
+    const [sync, setSync] = useState<SyncStatus>('loading');
+    const [conflict, setConflict] = useState<StoreValue['conflict']>();
+    const stateRef = useRef<PortfolioState>(state);
+    const versionRef = useRef('');
 
     useEffect(() => {
-        const sync = (event: StorageEvent) => {
+        stateRef.current = state;
+    }, [state]);
+
+    useEffect(() => {
+        let isCancelled = false;
+
+        const hydrate = async () => {
+            try {
+                const snapshot = await loadContent();
+
+                if (!isCancelled) {
+                    if (snapshot) {
+                        versionRef.current = snapshot.version;
+
+                        const next = {
+                            ...stateRef.current,
+                            content: snapshot.content
+                        };
+
+                        stateRef.current = next;
+                        setState(next);
+                    }
+
+                    setSync('ready');
+                }
+            } catch {
+                if (!isCancelled) {
+                    setSync('error');
+                }
+            }
+        };
+
+        void hydrate();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, []);
+
+    useEffect(() => {
+        const syncTab = (event: StorageEvent) => {
             if (event.key !== STORAGE_KEY) {
                 return;
             }
@@ -22,22 +66,109 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
             setState(readState());
         };
 
-        addEventListener('storage', sync);
+        addEventListener('storage', syncTab);
 
         return () => {
-            removeEventListener('storage', sync);
+            removeEventListener('storage', syncTab);
         };
+    }, []);
+
+    const applyLocal = useCallback((next: PortfolioState) => {
+        stateRef.current = next;
+        setState(next);
+        writeState(next);
+    }, []);
+
+    const setContent = useCallback(async (next: SiteContent): Promise<SaveOutcome> => {
+        if (sync !== 'ready') {
+            return 'error';
+        }
+
+        try {
+            const version = await saveContent(next, versionRef.current);
+
+            versionRef.current = version;
+            applyLocal({
+                ...stateRef.current,
+                content: next
+            });
+
+            return 'saved';
+        } catch (error) {
+            if (error instanceof ContentConflict) {
+                setConflict(error.conflict);
+
+                return 'conflict';
+            }
+
+            setSync('error');
+
+            return 'error';
+        }
+    }, [applyLocal, sync]);
+
+    const resolveConflict = useCallback(async (choice: 'discard' | 'overwrite') => {
+        const pending = conflict;
+
+        if (!pending) {
+            return;
+        }
+
+        setConflict(undefined);
+
+        if (choice === 'discard') {
+            versionRef.current = pending.version;
+            applyLocal({
+                ...stateRef.current,
+                content: pending.theirs
+            });
+
+            return;
+        }
+
+        try {
+            const version = await saveContent(pending.mine, pending.version);
+
+            versionRef.current = version;
+            applyLocal({
+                ...stateRef.current,
+                content: pending.mine
+            });
+        } catch {
+            setSync('error');
+        }
+    }, [applyLocal, conflict]);
+
+    const refreshInbox = useCallback(async () => {
+        try {
+            const messages = await loadInbox();
+
+            if (!messages) {
+                return;
+            }
+
+            const next = {
+                ...stateRef.current,
+                inbox: messages as Message[]
+            };
+
+            stateRef.current = next;
+            setState(next);
+        } catch {
+            /* The inbox is admin-only; a failure must not break the page. */
+        }
     }, []);
 
     const value = useMemo<StoreValue>(() => {
         const commit = (next: PortfolioState) => {
-            setState(next);
-            writeState(next);
+            applyLocal(next);
         };
 
         return {
             state,
-
+            sync,
+            canEdit: sync === 'ready',
+            conflict,
             projects: (options) => {
                 return options?.includeHidden ? state.projects : state.projects.filter((project) => {
                     return !project.hidden;
@@ -127,58 +258,52 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
                 });
             },
 
-            addMessage: (draft) => {
-                const message: Message = {
-                    id: uid('m'),
-                    at: new Date().toISOString(),
-                    read: false,
-                    archived: false,
-                    ...draft
-                };
+            addMessage: async (draft) => {
+                try {
+                    await appendMessage(draft);
 
-                commit({
-                    ...state,
-                    inbox: [message, ...state.inbox]
-                });
+                    return true;
+                } catch {
+                    return false;
+                }
             },
 
             updateMessage: (id, patch) => {
-                const index = state.inbox.findIndex((message) => {
-                    return message.id === id;
+                const inbox = state.inbox.map((message) => {
+                    if (message.id !== id) {
+                        return message;
+                    }
+
+                    return {
+                        ...message,
+                        ...patch
+                    };
                 });
-
-                if (index === -1) {
-                    return;
-                }
-
-                const inbox = [...state.inbox];
-
-                inbox[index] = {
-                    ...inbox[index],
-                    ...patch
-                };
 
                 commit({
                     ...state,
                     inbox
                 });
+                void saveInbox(inbox);
             },
 
             removeMessage: (id) => {
+                const inbox = state.inbox.filter((message) => {
+                    return message.id !== id;
+                });
+
                 commit({
                     ...state,
-                    inbox: state.inbox.filter((message) => {
-                        return message.id !== id;
-                    })
+                    inbox
                 });
+                void saveInbox(inbox);
             },
 
-            setContent: (next) => {
-                commit({
-                    ...state,
-                    content: next
-                });
-            },
+            refreshInbox,
+
+            setContent,
+
+            resolveConflict,
 
             toggleSection: (key) => {
                 const isVisible = state.sections[key];
@@ -192,7 +317,7 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
                 });
             }
         };
-    }, [state]);
+    }, [applyLocal, conflict, refreshInbox, resolveConflict, setContent, state, sync]);
 
     return (
         <StoreContext value={value}>

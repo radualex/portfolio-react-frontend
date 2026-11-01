@@ -10,6 +10,9 @@ import { AdminModeContext, type AdminModeValue, type AdminStatus } from './Admin
 import { checkAdminAuth } from './auth';
 import { readAdminFlag, writeAdminFlag } from './storage';
 
+// Store
+import { useStore } from '@/store/StoreContext';
+
 const InlineAdmin = lazy(() => {
     return import('./InlineAdmin');
 });
@@ -28,6 +31,13 @@ const AdminModeProvider: React.FunctionComponent<Props> = ({ children }) => {
     });
     const [editor, dispatchEditor] = useReducer(editorReducer, undefined);
     const location = useLocation();
+    const { refreshInbox } = useStore();
+
+    useEffect(() => {
+        if (status === 'on') {
+            void refreshInbox();
+        }
+    }, [refreshInbox, status]);
 
     useEffect(() => {
         dispatchEditor(undefined);

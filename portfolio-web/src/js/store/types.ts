@@ -167,3 +167,13 @@ export interface PortfolioState {
     content: SiteContent;
     sections: SectionVisibility;
 }
+
+export type SyncStatus = 'error' | 'loading' | 'ready';
+
+export type SaveOutcome = 'conflict' | 'error' | 'saved';
+
+export interface ConflictState {
+    mine: SiteContent;
+    theirs: SiteContent;
+    version: string;
+}
