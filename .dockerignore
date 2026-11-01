@@ -1,0 +1,11 @@
+node_modules
+dist
+portfolio-web
+.netlify
+.playwright-mcp
+.omo
+.codegraph
+.vscode
+.git
+.github
+*.md

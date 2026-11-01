@@ -7,6 +7,10 @@ dist
 .env.*
 !.env.example
 .omo/
+
+# Local content-service data (a Docker volume in production)
+.data/
+
 # Local Netlify folder
 .netlify
 
