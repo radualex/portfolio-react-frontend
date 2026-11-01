@@ -16,46 +16,47 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
     const [conflict, setConflict] = useState<StoreValue['conflict']>();
     const stateRef = useRef<PortfolioState>(state);
     const versionRef = useRef('');
+    const isMountedRef = useRef(true);
+
+    const hydrate = useCallback(async () => {
+        try {
+            const snapshot = await loadContent();
+
+            if (isMountedRef.current) {
+                if (snapshot) {
+                    versionRef.current = snapshot.version;
+
+                    const next = {
+                        ...stateRef.current,
+                        content: snapshot.content
+                    };
+
+                    stateRef.current = next;
+                    setState(next);
+                }
+
+                setSync('ready');
+            }
+        } catch {
+            if (isMountedRef.current) {
+                setSync('error');
+            }
+        }
+    }, []);
 
     useEffect(() => {
         stateRef.current = state;
     }, [state]);
 
     useEffect(() => {
-        let isCancelled = false;
-
-        const hydrate = async () => {
-            try {
-                const snapshot = await loadContent();
-
-                if (!isCancelled) {
-                    if (snapshot) {
-                        versionRef.current = snapshot.version;
-
-                        const next = {
-                            ...stateRef.current,
-                            content: snapshot.content
-                        };
-
-                        stateRef.current = next;
-                        setState(next);
-                    }
-
-                    setSync('ready');
-                }
-            } catch {
-                if (!isCancelled) {
-                    setSync('error');
-                }
-            }
-        };
+        isMountedRef.current = true;
 
         void hydrate();
 
         return () => {
-            isCancelled = true;
+            isMountedRef.current = false;
         };
-    }, []);
+    }, [hydrate]);
 
     useEffect(() => {
         const syncTab = (event: StorageEvent) => {
