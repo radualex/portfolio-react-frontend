@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 
 // Store
 import { appendMessage, ContentConflict, loadContent, loadInbox, saveContent, saveInbox } from '@/store/remote';
-import { StoreContext, type StoreValue } from '@/store/StoreContext';
+import { StoreContext } from '@/store/StoreContext';
 import { readState, STORAGE_KEY, uid, writeState } from '@/store/storage';
-import type { Message, PortfolioState, Project, SaveOutcome, SiteContent, SyncStatus } from '@/store/types';
+import type { Message, PortfolioState, Project, SaveOutcome, SiteContent, StoreValue, SyncStatus } from '@/store/types';
 
 export interface StoreProviderProps {
     children: ReactNode;
