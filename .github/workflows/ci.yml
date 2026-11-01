@@ -26,6 +26,8 @@ jobs:
               - 'content-service/**'
               - 'package.json'
               - 'package-lock.json'
+              - '.github/scripts/**'
+              - '.github/workflows/deploy-content-service.yml'
 
   web:
     needs: changes
@@ -54,4 +56,5 @@ jobs:
       - run: node --check content-service/src/index.mjs
       - run: node --check content-service/src/app.mjs
       - run: node --test content-service/test/service.test.mjs
+      - run: shellcheck .github/scripts/*.sh
       - run: docker build -f content-service/Dockerfile -t content-service:ci .

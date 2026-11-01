@@ -1,0 +1,64 @@
+name: Deploy content-service
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+    branches: [master]
+
+concurrency:
+  group: deploy-content-service
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      # Pinned to the commit CI passed on, so this workflow and the scripts it calls
+      # always come from the same revision. Depth 2 so HEAD^ is available for the diff.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 2
+
+      # CI reports success even when every job was skipped, so ask directly whether
+      # this push touched the service. A frontend-only merge must not rebuild it.
+      - name: Did content-service change?
+        id: changed
+        env:
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+
+          if git diff --name-only HEAD^ HEAD -- \
+              content-service \
+              package.json \
+              package-lock.json \
+              .github/scripts \
+              .github/workflows/deploy-content-service.yml | grep -q .; then
+              echo 'changed=true' >> "${GITHUB_OUTPUT}"
+              echo "content-service changed in ${HEAD_SHA}; deploying."
+          else
+              echo 'changed=false' >> "${GITHUB_OUTPUT}"
+              echo "No content-service changes in ${HEAD_SHA}; skipping deploy."
+          fi
+
+      - name: Trigger the Coolify deployment
+        if: steps.changed.outputs.changed == 'true'
+        id: trigger
+        env:
+          COOLIFY_BASE_URL: ${{ secrets.COOLIFY_BASE_URL }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          COOLIFY_APP_UUID: ${{ secrets.COOLIFY_APP_UUID }}
+          CI_PASSED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: ./.github/scripts/coolify-deploy.sh
+
+      - name: Verify the deployment finished
+        if: steps.changed.outputs.changed == 'true'
+        env:
+          COOLIFY_BASE_URL: ${{ secrets.COOLIFY_BASE_URL }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          DEPLOYMENT_UUID: ${{ steps.trigger.outputs.deployment_uuid }}
+        run: ./.github/scripts/coolify-verify.sh
