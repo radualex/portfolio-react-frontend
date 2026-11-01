@@ -1,15 +1,16 @@
+import { omit } from 'lodash-es';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // Constants
 import { ConflictChoice } from '@/store/constants';
 
 // Store
-import { appendMessage, ContentConflict, loadContent, loadInbox, saveContent, saveInbox } from '@/store/remote';
+import { appendMessage, ContentConflict, loadInbox, loadState, saveInbox, saveState } from '@/store/remote';
 import { StoreContext } from '@/store/StoreContext';
 import { readState, STORAGE_KEY, uid, writeState } from '@/store/storage';
 
 // Types
-import type { Message, PortfolioState, Project, SaveOutcome, SiteContent, StoreProviderProps, StoreValue, SyncStatus } from '@/store/types';
+import type { Message, PersistedState, PortfolioState, Project, SaveOutcome, SiteContent, StoreProviderProps, StoreValue, SyncStatus } from '@/store/types';
 
 const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }) => {
     const [state, setState] = useState<PortfolioState>(readState);
@@ -19,9 +20,15 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
     const versionRef = useRef('');
     const isMountedRef = useRef(true);
 
+    const applyLocal = useCallback((next: PortfolioState) => {
+        stateRef.current = next;
+        setState(next);
+        writeState(next);
+    }, []);
+
     const hydrate = useCallback(async () => {
         try {
-            const snapshot = await loadContent();
+            const snapshot = await loadState();
 
             if (isMountedRef.current) {
                 if (snapshot) {
@@ -29,7 +36,7 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
 
                     const next = {
                         ...stateRef.current,
-                        content: snapshot.content
+                        ...snapshot.state
                     };
 
                     stateRef.current = next;
@@ -75,25 +82,21 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
         };
     }, []);
 
-    const applyLocal = useCallback((next: PortfolioState) => {
-        stateRef.current = next;
-        setState(next);
-        writeState(next);
-    }, []);
-
-    const setContent = useCallback(async (next: SiteContent): Promise<SaveOutcome> => {
+    const commit = useCallback(async (patch: Partial<PersistedState>): Promise<SaveOutcome> => {
         if (sync !== 'ready') {
             return 'error';
         }
 
+        const next = {
+            ...stateRef.current,
+            ...patch
+        };
+
         try {
-            const version = await saveContent(next, versionRef.current);
+            const version = await saveState(omit(next, 'inbox'), versionRef.current);
 
             versionRef.current = version;
-            applyLocal({
-                ...stateRef.current,
-                content: next
-            });
+            applyLocal(next);
 
             return 'saved';
         } catch (error) {
@@ -122,19 +125,19 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
             versionRef.current = pending.version;
             applyLocal({
                 ...stateRef.current,
-                content: pending.theirs
+                ...pending.theirs
             });
 
             return;
         }
 
         try {
-            const version = await saveContent(pending.mine, pending.version);
+            const version = await saveState(pending.mine, pending.version);
 
             versionRef.current = version;
             applyLocal({
                 ...stateRef.current,
-                content: pending.mine
+                ...pending.mine
             });
         } catch {
             setSync('error');
@@ -164,10 +167,6 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
     }, []);
 
     const value = useMemo<StoreValue>(() => {
-        const commit = (next: PortfolioState) => {
-            applyLocal(next);
-        };
-
         return {
             state,
             sync,
@@ -184,17 +183,19 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
             }).length,
 
             setAvailability: (next) => {
-                commit({
-                    ...state,
+                return commit({
                     availability: {
-                        state: next.state ?? state.availability.state,
-                        note: typeof next.note === 'string' ? next.note.slice(0, 160) : state.availability.note
+                        state: next.state ?? stateRef.current.availability.state,
+                        note: typeof next.note === 'string'
+                            ? next.note.slice(0, 160)
+                            : stateRef.current.availability.note
                     }
                 });
             },
 
             saveProject: ({ id, ...fields }) => {
-                const index = state.projects.findIndex((project) => {
+                const current = stateRef.current.projects;
+                const index = current.findIndex((project) => {
                     return project.id === id;
                 });
 
@@ -211,53 +212,48 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
                         hidden: false
                     };
 
-                    commit({
-                        ...state,
-                        projects: [...state.projects, created]
+                    return commit({
+                        projects: [...current, created]
                     });
-
-                    return;
                 }
 
-                const projects = [...state.projects];
+                const projects = [...current];
 
                 projects[index] = {
                     ...projects[index],
                     ...fields
                 };
 
-                commit({
-                    ...state,
+                return commit({
                     projects
                 });
             },
 
             removeProject: (id) => {
-                commit({
-                    ...state,
-                    projects: state.projects.filter((project) => {
+                return commit({
+                    projects: stateRef.current.projects.filter((project) => {
                         return project.id !== id;
                     })
                 });
             },
 
             moveProject: (id, delta) => {
-                const from = state.projects.findIndex((project) => {
+                const current = stateRef.current.projects;
+                const from = current.findIndex((project) => {
                     return project.id === id;
                 });
                 const to = from + delta;
 
-                if (from === -1 || to < 0 || to >= state.projects.length) {
-                    return;
+                if (from === -1 || to < 0 || to >= current.length) {
+                    return Promise.resolve('saved');
                 }
 
-                const projects = [...state.projects];
+                const projects = [...current];
                 const [moved] = projects.splice(from, 1);
 
                 projects.splice(to, 0, moved);
 
-                commit({
-                    ...state,
+                return commit({
                     projects
                 });
             },
@@ -273,7 +269,7 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
             },
 
             updateMessage: (id, patch) => {
-                const inbox = state.inbox.map((message) => {
+                const inbox = stateRef.current.inbox.map((message) => {
                     if (message.id !== id) {
                         return message;
                     }
@@ -284,20 +280,20 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
                     };
                 });
 
-                commit({
-                    ...state,
+                applyLocal({
+                    ...stateRef.current,
                     inbox
                 });
                 void saveInbox(inbox);
             },
 
             removeMessage: (id) => {
-                const inbox = state.inbox.filter((message) => {
+                const inbox = stateRef.current.inbox.filter((message) => {
                     return message.id !== id;
                 });
 
-                commit({
-                    ...state,
+                applyLocal({
+                    ...stateRef.current,
                     inbox
                 });
                 void saveInbox(inbox);
@@ -305,23 +301,27 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
 
             refreshInbox,
 
-            setContent,
+            setContent: (next: SiteContent) => {
+                return commit({
+                    content: next
+                });
+            },
 
             resolveConflict,
 
             toggleSection: (key) => {
-                const isVisible = state.sections[key];
+                const { sections } = stateRef.current;
+                const isVisible = sections[key];
 
-                commit({
-                    ...state,
+                return commit({
                     sections: {
-                        ...state.sections,
+                        ...sections,
                         [key]: !isVisible
                     }
                 });
             }
         };
-    }, [applyLocal, conflict, refreshInbox, resolveConflict, setContent, state, sync]);
+    }, [applyLocal, commit, conflict, refreshInbox, resolveConflict, state, sync]);
 
     return (
         <StoreContext value={value}>

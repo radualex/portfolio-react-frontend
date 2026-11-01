@@ -11,7 +11,7 @@ import Button from '@/components/Button';
 import { useToast } from '@/components/Toast/ToastContext';
 
 // Helpers
-import { diffContent } from '@/helpers/diff';
+import { diffState } from '@/helpers/diff';
 import { formatPath } from './helpers';
 
 // Store
@@ -40,7 +40,7 @@ const ContentConflictDialog: React.FunctionComponent<Props> = ({ ...props }) => 
         return;
     }
 
-    const changes = diffContent(conflict.mine, conflict.theirs);
+    const changes = diffState(conflict.mine, conflict.theirs);
     const fieldLabel = `${changes.length} differing field${changes.length === 1 ? '' : 's'}`;
     const lead = `Different content was saved while you were editing. Review the ${fieldLabel}, then choose which version to keep.`;
 

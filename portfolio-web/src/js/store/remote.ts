@@ -2,10 +2,10 @@
 import { CONTENT_PATH } from './constants';
 
 // Store
-import { normalizeContent } from './storage';
+import { normalizeState } from './storage';
 
 // Types
-import type { ConflictBody, ConflictState, Message, MessageDraft, SiteContent, Snapshot } from './types';
+import type { ConflictBody, ConflictState, Message, MessageDraft, PersistedState, Snapshot } from './types';
 
 export class ContentConflict extends Error {
     readonly conflict: ConflictState;
@@ -22,7 +22,7 @@ const readTag = (response: Response): string => {
     return (response.headers.get('ETag') ?? '').replaceAll('"', '');
 };
 
-export const loadContent = async (): Promise<Snapshot | undefined> => {
+export const loadState = async (): Promise<Snapshot | undefined> => {
     const response = await fetch(`${CONTENT_PATH}/content`, {
         cache: 'no-store',
         credentials: 'same-origin'
@@ -37,12 +37,12 @@ export const loadContent = async (): Promise<Snapshot | undefined> => {
     }
 
     return {
-        content: normalizeContent((await response.json()) as Partial<SiteContent>),
+        state: normalizeState((await response.json()) as Partial<PersistedState>),
         version: readTag(response)
     };
 };
 
-export const saveContent = async (content: SiteContent, version: string): Promise<string> => {
+export const saveState = async (state: PersistedState, version: string): Promise<string> => {
     const headers: Record<string, string> = {
         'Content-Type': 'application/json'
     };
@@ -56,15 +56,15 @@ export const saveContent = async (content: SiteContent, version: string): Promis
         cache: 'no-store',
         credentials: 'same-origin',
         headers,
-        body: JSON.stringify(content)
+        body: JSON.stringify(state)
     });
 
     if (response.status === 412) {
         const body = (await response.json()) as ConflictBody;
 
         throw new ContentConflict({
-            mine: content,
-            theirs: normalizeContent(body.current),
+            mine: state,
+            theirs: normalizeState(body.current),
             version: body.version
         });
     }

@@ -12,7 +12,9 @@ import ButtonGroup from '@/components/ButtonGroup';
 import Panel from '@/components/Panel';
 import StatusPill from '@/components/StatusPill';
 import TextField from '@/components/TextField';
-import { useToast } from '@/components/Toast/ToastContext';
+
+// Hooks
+import { useSaveOutcome } from '@/hooks/useSaveOutcome';
 
 // Store
 import { useStore } from '@/store/StoreContext';
@@ -24,7 +26,7 @@ export interface Props extends Omit<React.ComponentProps<typeof Panel>, 'title' 
 
 const AvailabilityPanel: React.FunctionComponent<Props> = ({ ...props }) => {
     const { state, setAvailability } = useStore();
-    const toast = useToast();
+    const report = useSaveOutcome();
 
     const [note, setNote] = useState(state.availability.note);
 
@@ -32,7 +34,7 @@ const AvailabilityPanel: React.FunctionComponent<Props> = ({ ...props }) => {
         setNote(event.target.value);
     }, []);
 
-    const handlePick = useCallback((next: AvailabilityState) => {
+    const pick = useCallback(async (next: AvailabilityState) => {
         const picked = STATES.find((option) => {
             return option.value === next;
         })?.value;
@@ -41,21 +43,25 @@ const AvailabilityPanel: React.FunctionComponent<Props> = ({ ...props }) => {
             return;
         }
 
-        setAvailability({
+        report(await setAvailability({
             state: picked,
             note
-        });
-        toast(
-            picked === AvailabilityState.Available ? 'Shown as available' : 'Shown as not available'
-        );
-    }, [note, setAvailability, toast]);
+        }), picked === AvailabilityState.Available ? 'Shown as available' : 'Shown as not available');
+    }, [note, report, setAvailability]);
+
+    const handlePick = useCallback((next: AvailabilityState) => {
+        void pick(next);
+    }, [pick]);
+
+    const saveNote = useCallback(async () => {
+        report(await setAvailability({
+            note
+        }), 'Note saved');
+    }, [note, report, setAvailability]);
 
     const handleSave = useCallback(() => {
-        setAvailability({
-            note
-        });
-        toast('Note saved');
-    }, [note, setAvailability, toast]);
+        void saveNote();
+    }, [saveNote]);
 
     const availabilityDraft = {
         state: state.availability.state,

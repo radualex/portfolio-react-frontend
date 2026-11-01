@@ -1,6 +1,6 @@
 // Store
 import { DEFAULT_STATE } from '@/store/defaults';
-import type { PortfolioState, SiteContent } from '@/store/types';
+import type { PersistedState, PortfolioState, SiteContent } from '@/store/types';
 
 export const STORAGE_KEY = 'rs-portfolio-v1';
 
@@ -90,6 +90,23 @@ export const normalizeContent = (content: Partial<SiteContent> | undefined): Sit
     });
 };
 
+export const normalizeState = (raw: Partial<PersistedState> | undefined): PersistedState => {
+    const defaults = clone(DEFAULT_STATE);
+
+    return {
+        availability: {
+            ...defaults.availability,
+            ...raw?.availability
+        },
+        projects: Array.isArray(raw?.projects) ? raw.projects : defaults.projects,
+        content: normalizeContent(raw?.content),
+        sections: {
+            ...defaults.sections,
+            ...raw?.sections
+        }
+    };
+};
+
 export const readState = (): PortfolioState => {
     let raw: string | undefined;
 
@@ -107,14 +124,8 @@ export const readState = (): PortfolioState => {
         const parsed = JSON.parse(raw) as Partial<PortfolioState>;
 
         return {
-            availability: parsed.availability ?? clone(DEFAULT_STATE.availability),
-            projects: Array.isArray(parsed.projects) ? parsed.projects : clone(DEFAULT_STATE.projects),
-            inbox: Array.isArray(parsed.inbox) ? parsed.inbox : [],
-            content: normalizeContent(parsed.content),
-            sections: {
-                ...clone(DEFAULT_STATE.sections),
-                ...parsed.sections
-            }
+            ...normalizeState(parsed),
+            inbox: Array.isArray(parsed.inbox) ? parsed.inbox : []
         };
     } catch {
         return seededState();
