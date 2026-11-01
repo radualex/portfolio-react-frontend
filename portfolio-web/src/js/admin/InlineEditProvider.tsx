@@ -8,6 +8,7 @@ import { useToast } from '@/components/Toast/ToastContext';
 import { useAdminMode } from './AdminModeContext';
 import { InlineEditContext } from './InlineEditContext';
 import { setByPath } from './paths';
+import { EditingSectionActionType } from './constants';
 import { readAutoEditFlag, writeAutoEditFlag } from './storage';
 import type { EditingSectionAction, EditScope, InlineEditValue } from './types';
 
@@ -21,15 +22,15 @@ export interface Props {
 
 const editingSectionReducer = (current: EditScope | undefined, action: EditingSectionAction): EditScope | undefined => {
     switch (action.type) {
-        case 'clear': {
+        case EditingSectionActionType.Clear: {
             return;
         }
 
-        case 'clearUnlessSite': {
+        case EditingSectionActionType.ClearUnlessSite: {
             return current === 'site' ? current : undefined;
         }
 
-        case 'scope': {
+        case EditingSectionActionType.Scope: {
             return action.scope;
         }
         default: {
@@ -57,14 +58,14 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
     useEffect(() => {
         if (!isAdmin) {
             dispatchEditingSection({
-                type: 'clear'
+                type: EditingSectionActionType.Clear
             });
         }
     }, [isAdmin]);
 
     useEffect(() => {
         dispatchEditingSection({
-            type: 'clearUnlessSite'
+            type: EditingSectionActionType.ClearUnlessSite
         });
     }, [location.pathname]);
 
@@ -84,7 +85,7 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
         draftRef.current = next;
         dispatchDraft(next);
         dispatchEditingSection({
-            type: 'scope',
+            type: EditingSectionActionType.Scope,
             scope
         });
     }, [canEdit, isAdmin, state.content, toast]);
@@ -115,7 +116,7 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
         if (outcome === 'saved') {
             toast('Section saved');
             dispatchEditingSection({
-                type: 'clear'
+                type: EditingSectionActionType.Clear
             });
 
             return;
@@ -132,7 +133,7 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
 
     const cancel = useCallback(() => {
         dispatchEditingSection({
-            type: 'clear'
+            type: EditingSectionActionType.Clear
         });
     }, []);
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // Store
+import { ConflictChoice } from '@/store/constants';
 import { appendMessage, ContentConflict, loadContent, loadInbox, saveContent, saveInbox } from '@/store/remote';
 import { StoreContext } from '@/store/StoreContext';
 import { readState, STORAGE_KEY, uid, writeState } from '@/store/storage';
@@ -104,7 +105,7 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
         }
     }, [applyLocal, sync]);
 
-    const resolveConflict = useCallback(async (choice: 'discard' | 'overwrite') => {
+    const resolveConflict = useCallback(async (choice: ConflictChoice) => {
         const pending = conflict;
 
         if (!pending) {
@@ -113,7 +114,7 @@ const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }
 
         setConflict(undefined);
 
-        if (choice === 'discard') {
+        if (choice === ConflictChoice.Discard) {
             versionRef.current = pending.version;
             applyLocal({
                 ...stateRef.current,

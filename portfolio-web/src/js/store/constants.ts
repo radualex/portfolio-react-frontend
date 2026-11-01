@@ -1,5 +1,10 @@
 export const CONTENT_PATH = '/api';
 
+export enum ConflictChoice {
+    Discard = 'discard',
+    Overwrite = 'overwrite'
+}
+
 export enum AvailabilityState {
     Available = 'available',
     Unavailable = 'unavailable'

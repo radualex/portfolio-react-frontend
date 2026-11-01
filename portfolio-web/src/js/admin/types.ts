@@ -1,5 +1,5 @@
 // Constants
-import type { ContentSection, EditorTarget } from './constants';
+import type { ContentSection, EditingSectionActionType, EditorTarget } from './constants';
 
 // Store
 import type { SiteContent } from '@/store/types';
@@ -25,4 +25,7 @@ export interface InlineEditValue {
     cancel: () => void;
 }
 
-export type EditingSectionAction = { type: 'clear'; } | { type: 'clearUnlessSite'; } | { type: 'scope'; scope: EditScope; };
+export type EditingSectionAction
+    = | { type: EditingSectionActionType.Clear; }
+        | { type: EditingSectionActionType.ClearUnlessSite; }
+        | { type: EditingSectionActionType.Scope; scope: EditScope; };

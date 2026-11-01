@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 // Constants
-import type { AvailabilityState, MessageType, SectionKey } from './constants';
+import type { AvailabilityState, ConflictChoice, MessageType, SectionKey } from './constants';
 
 export interface Availability {
     state: AvailabilityState;
@@ -214,7 +214,7 @@ export interface StoreValue {
     refreshInbox: () => Promise<void>;
 
     setContent: (next: SiteContent) => Promise<SaveOutcome>;
-    resolveConflict: (choice: 'discard' | 'overwrite') => Promise<void>;
+    resolveConflict: (choice: ConflictChoice) => Promise<void>;
     toggleSection: (key: SectionKey) => void;
 }
 

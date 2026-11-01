@@ -14,6 +14,7 @@ import { diffContent } from '@/helpers/diff';
 import { formatPath } from './helpers';
 
 // Store
+import { ConflictChoice } from '@/store/constants';
 import { useStore } from '@/store/StoreContext';
 
 // Styles
@@ -26,12 +27,12 @@ const ContentConflictDialog: React.FunctionComponent<Props> = ({ ...props }) => 
     const toast = useToast();
 
     const handleKeepSaved = useCallback(() => {
-        void resolveConflict('discard');
+        void resolveConflict(ConflictChoice.Discard);
         toast('Kept the saved version');
     }, [resolveConflict, toast]);
 
     const handleOverwrite = useCallback(() => {
-        void resolveConflict('overwrite');
+        void resolveConflict(ConflictChoice.Overwrite);
         toast('Overwrote the saved version');
     }, [resolveConflict, toast]);
 
