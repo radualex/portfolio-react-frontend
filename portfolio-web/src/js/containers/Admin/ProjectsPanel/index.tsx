@@ -8,10 +8,12 @@ import Button from '@/components/Button';
 import EmptyState from '@/components/EmptyState';
 import Panel from '@/components/Panel';
 import Tag from '@/components/Tag';
-import { useToast } from '@/components/Toast/ToastContext';
 
 // Containers
 import ProjectDialog from '@/containers/Admin/ProjectDialog';
+
+// Hooks
+import { useSaveOutcome } from '@/hooks/useSaveOutcome';
 
 // Store
 import { useStore } from '@/store/StoreContext';
@@ -25,7 +27,7 @@ import type { Editing } from './types';
 
 const ProjectsPanel: React.FunctionComponent = () => {
     const { projects, saveProject, removeProject, moveProject } = useStore();
-    const toast = useToast();
+    const report = useSaveOutcome();
     const [editing, setEditing] = useState<Editing>();
 
     const all = projects({
@@ -35,11 +37,14 @@ const ProjectsPanel: React.FunctionComponent = () => {
         return !project.hidden;
     }).length;
 
+    const write = useCallback(async (draft: ProjectDraft) => {
+        report(await saveProject(draft), 'Project saved');
+    }, [report, saveProject]);
+
     const handleSave = useCallback((draft: ProjectDraft) => {
-        saveProject(draft);
         setEditing(undefined);
-        toast('Project saved');
-    }, [saveProject, toast]);
+        void write(draft);
+    }, [write]);
 
     const handleAdd = useCallback(() => {
         setEditing({
@@ -57,29 +62,39 @@ const ProjectsPanel: React.FunctionComponent = () => {
         });
     }, []);
 
-    const handleToggle = useCallback((project: Project) => {
-        saveProject({
+    const toggle = useCallback(async (project: Project) => {
+        report(await saveProject({
             id: project.id,
             hidden: !project.hidden
-        });
-        toast(project.hidden ? 'Shown on the site' : 'Hidden from the site');
-    }, [saveProject, toast]);
+        }), project.hidden ? 'Shown on the site' : 'Hidden from the site');
+    }, [report, saveProject]);
+
+    const handleToggle = useCallback((project: Project) => {
+        void toggle(project);
+    }, [toggle]);
+
+    const drop = useCallback(async (id: string) => {
+        report(await removeProject(id), 'Project deleted');
+    }, [report, removeProject]);
 
     const handleRemove = useCallback((project: Project) => {
         if (!confirm(`Delete "${project.title}"? This cannot be undone.`)) {
             return;
         }
-        removeProject(project.id);
-        toast('Project deleted');
-    }, [removeProject, toast]);
+        void drop(project.id);
+    }, [drop]);
+
+    const move = useCallback(async (project: Project, delta: number) => {
+        report(await moveProject(project.id, delta), 'Project moved');
+    }, [moveProject, report]);
 
     const handleMoveUp = useCallback((project: Project) => {
-        moveProject(project.id, -1);
-    }, [moveProject]);
+        void move(project, -1);
+    }, [move]);
 
     const handleMoveDown = useCallback((project: Project) => {
-        moveProject(project.id, 1);
-    }, [moveProject]);
+        void move(project, 1);
+    }, [move]);
 
     const note = (
         <React.Fragment>

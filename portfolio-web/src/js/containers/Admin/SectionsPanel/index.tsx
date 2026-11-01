@@ -8,7 +8,9 @@ import type { SectionKey } from '@/store/constants';
 // Components
 import Button from '@/components/Button';
 import Panel from '@/components/Panel';
-import { useToast } from '@/components/Toast/ToastContext';
+
+// Hooks
+import { useSaveOutcome } from '@/hooks/useSaveOutcome';
 
 // Store
 import { useStore } from '@/store/StoreContext';
@@ -20,12 +22,15 @@ export interface Props extends Omit<React.ComponentProps<typeof Panel>, 'title' 
 
 const SectionsPanel: React.FunctionComponent<Props> = (props) => {
     const { state, toggleSection } = useStore();
-    const toast = useToast();
+    const report = useSaveOutcome();
+
+    const toggle = useCallback(async (key: SectionKey, isVisible: boolean) => {
+        report(await toggleSection(key), isVisible ? 'Section hidden' : 'Section shown');
+    }, [report, toggleSection]);
 
     const handleToggle = useCallback((key: SectionKey, isVisible: boolean) => {
-        toggleSection(key);
-        toast(isVisible ? 'Section hidden' : 'Section shown');
-    }, [toggleSection, toast]);
+        void toggle(key, isVisible);
+    }, [toggle]);
 
     return (
         <Panel title="Sections" note="Hide a section without deleting its content." {...props}>

@@ -162,6 +162,8 @@ export interface SiteContent {
 
 export type SectionVisibility = Record<SectionKey, boolean>;
 
+export type PersistedState = Omit<PortfolioState, 'inbox'>;
+
 export interface PortfolioState {
     availability: Availability;
     projects: Project[];
@@ -175,18 +177,18 @@ export type SyncStatus = 'error' | 'loading' | 'ready';
 export type SaveOutcome = 'conflict' | 'error' | 'saved';
 
 export interface ConflictState {
-    mine: SiteContent;
-    theirs: SiteContent;
+    mine: PersistedState;
+    theirs: PersistedState;
     version: string;
 }
 
 export interface Snapshot {
-    content: SiteContent;
+    state: PersistedState;
     version: string;
 }
 
 export interface ConflictBody {
-    current: SiteContent;
+    current: PersistedState;
     version: string;
 }
 
@@ -202,11 +204,11 @@ export interface StoreValue {
     projects: (options?: ProjectListOptions) => Project[];
     unreadCount: number;
 
-    setAvailability: (next: Partial<Availability>) => void;
+    setAvailability: (next: Partial<Availability>) => Promise<SaveOutcome>;
 
-    saveProject: (draft: ProjectDraft | ProjectUpdate) => void;
-    removeProject: (id: string) => void;
-    moveProject: (id: string, delta: number) => void;
+    saveProject: (draft: ProjectDraft | ProjectUpdate) => Promise<SaveOutcome>;
+    removeProject: (id: string) => Promise<SaveOutcome>;
+    moveProject: (id: string, delta: number) => Promise<SaveOutcome>;
 
     addMessage: (draft: MessageDraft) => Promise<boolean>;
     updateMessage: (id: string, patch: Partial<Message>) => void;
@@ -215,7 +217,7 @@ export interface StoreValue {
 
     setContent: (next: SiteContent) => Promise<SaveOutcome>;
     resolveConflict: (choice: ConflictChoice) => Promise<void>;
-    toggleSection: (key: SectionKey) => void;
+    toggleSection: (key: SectionKey) => Promise<SaveOutcome>;
 }
 
 export interface StoreProviderProps {

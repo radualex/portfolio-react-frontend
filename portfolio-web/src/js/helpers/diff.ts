@@ -2,7 +2,7 @@ import { isArray, isPlainObject, keys, sortBy, toPairs, toString, transform, uni
 
 // Types
 import type { Change } from './types';
-import type { SiteContent } from '@/store/types';
+import type { PersistedState } from '@/store/types';
 
 type Leaves = Record<string, string>;
 
@@ -24,7 +24,7 @@ const flatten = (value: unknown, prefix = ''): Leaves => {
     }, {} as Leaves);
 };
 
-export const diffContent = (mine: SiteContent, theirs: SiteContent): Change[] => {
+export const diffState = (mine: PersistedState, theirs: PersistedState): Change[] => {
     const mineLeaves = flatten(mine);
     const theirsLeaves = flatten(theirs);
     const paths = sortBy(uniq([...keys(mineLeaves), ...keys(theirsLeaves)]));
