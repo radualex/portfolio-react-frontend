@@ -27,7 +27,7 @@ jobs:
               - 'package.json'
               - 'package-lock.json'
               - '.github/scripts/**'
-              - '.github/workflows/deploy-content-service.yml'
+              - '.github/workflows/deploy.yml'
 
   web:
     needs: changes

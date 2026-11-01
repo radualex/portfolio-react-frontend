@@ -37,7 +37,7 @@ jobs:
               package.json \
               package-lock.json \
               .github/scripts \
-              .github/workflows/deploy-content-service.yml | grep -q .; then
+              .github/workflows/deploy.yml | grep -q .; then
               echo 'changed=true' >> "${GITHUB_OUTPUT}"
               echo "content-service changed in ${HEAD_SHA}; deploying."
           else
