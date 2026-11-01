@@ -1,5 +1,7 @@
-// Store
+// Constants
 import { CONTENT_PATH } from './constants';
+
+// Store
 import { normalizeContent } from './storage';
 
 // Types

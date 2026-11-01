@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-// Store
+// Constants
 import { ConflictChoice } from '@/store/constants';
+
+// Store
 import { appendMessage, ContentConflict, loadContent, loadInbox, saveContent, saveInbox } from '@/store/remote';
 import { StoreContext } from '@/store/StoreContext';
 import { readState, STORAGE_KEY, uid, writeState } from '@/store/storage';
+
+// Types
 import type { Message, PortfolioState, Project, SaveOutcome, SiteContent, StoreProviderProps, StoreValue, SyncStatus } from '@/store/types';
 
 const StoreProvider: React.FunctionComponent<StoreProviderProps> = ({ children }) => {

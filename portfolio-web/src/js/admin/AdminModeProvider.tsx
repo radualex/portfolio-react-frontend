@@ -9,10 +9,12 @@ import AdminToolbar from './AdminToolbar';
 import { AdminModeContext } from './AdminModeContext';
 import { checkAdminAuth } from './auth';
 import { readAdminFlag, writeAdminFlag } from './storage';
-import type { AdminModeValue, AdminStatus } from './types';
 
 // Store
 import { useStore } from '@/store/StoreContext';
+
+// Types
+import type { AdminModeValue, AdminStatus } from './types';
 
 const InlineAdmin = lazy(() => {
     return import('./InlineAdmin');

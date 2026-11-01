@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
+// Constants
+import { EditingSectionActionType } from './constants';
+
 // Components
 import ContentConflictDialog from './ContentConflictDialog';
 import InlineEditBar from './InlineEditBar';
@@ -8,13 +11,14 @@ import { useToast } from '@/components/Toast/ToastContext';
 import { useAdminMode } from './AdminModeContext';
 import { InlineEditContext } from './InlineEditContext';
 import { setByPath } from './paths';
-import { EditingSectionActionType } from './constants';
 import { readAutoEditFlag, writeAutoEditFlag } from './storage';
-import type { EditingSectionAction, EditScope, InlineEditValue } from './types';
 
 // Store
 import { useStore } from '@/store/StoreContext';
+
+// Types
 import type { SiteContent } from '@/store/types';
+import type { EditingSectionAction, EditScope, InlineEditValue } from './types';
 
 export interface Props {
     children: ReactNode;

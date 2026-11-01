@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 // Constants
 import { EMPTY_VALUE } from './constants';
 import { ButtonSize, ButtonVariant } from '@/components/Button/constants';
+import { ConflictChoice } from '@/store/constants';
 
 // Components
 import AdminDialog from '@/admin/AdminDialog';
@@ -14,7 +15,6 @@ import { diffContent } from '@/helpers/diff';
 import { formatPath } from './helpers';
 
 // Store
-import { ConflictChoice } from '@/store/constants';
 import { useStore } from '@/store/StoreContext';
 
 // Styles
