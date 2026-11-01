@@ -182,3 +182,8 @@ export interface Snapshot {
     content: SiteContent;
     version: string;
 }
+
+export interface ConflictBody {
+    current: SiteContent;
+    version: string;
+}

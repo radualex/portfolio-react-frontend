@@ -1,13 +1,8 @@
 import { isArray, isPlainObject, keys, sortBy, toPairs, toString, transform, uniq } from 'lodash-es';
 
 // Types
+import type { Change } from './types';
 import type { SiteContent } from '@/store/types';
-
-export interface Change {
-    path: string;
-    mine: string;
-    theirs: string;
-}
 
 type Leaves = Record<string, string>;
 

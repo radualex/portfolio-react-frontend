@@ -3,12 +3,7 @@ import { CONTENT_PATH } from './constants';
 import { normalizeContent } from './storage';
 
 // Types
-import type { ConflictState, Message, MessageDraft, SiteContent, Snapshot } from './types';
-
-interface ConflictBody {
-    current: SiteContent;
-    version: string;
-}
+import type { ConflictBody, ConflictState, Message, MessageDraft, SiteContent, Snapshot } from './types';
 
 export class ContentConflict extends Error {
     readonly conflict: ConflictState;
