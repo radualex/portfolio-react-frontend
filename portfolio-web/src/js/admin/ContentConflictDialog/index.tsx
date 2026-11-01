@@ -19,7 +19,9 @@ import { useStore } from '@/store/StoreContext';
 // Styles
 import styles from './styles.module.css';
 
-const ContentConflictDialog: React.FunctionComponent = () => {
+export interface Props extends Omit<React.ComponentProps<typeof AdminDialog>, 'title' | 'onClose' | 'children'> {}
+
+const ContentConflictDialog: React.FunctionComponent<Props> = ({ ...props }) => {
     const { conflict, resolveConflict } = useStore();
     const toast = useToast();
 
@@ -42,7 +44,7 @@ const ContentConflictDialog: React.FunctionComponent = () => {
     const lead = `Different content was saved while you were editing. Review the ${fieldLabel}, then choose which version to keep.`;
 
     return (
-        <AdminDialog title="Content changed elsewhere" onClose={handleKeepSaved}>
+        <AdminDialog title="Content changed elsewhere" onClose={handleKeepSaved} {...props}>
             <p className={styles.lead}>{lead}</p>
 
             <ul className={styles.list}>
