@@ -16,10 +16,8 @@ import { fieldPatch } from '../helpers';
 import styles from '../styles.module.css';
 
 // Types
-import type { SiteContent } from '@/store/types';
+import type { FooterContent } from '@/store/types';
 import type { TextKey } from '../types';
-
-type FooterContent = SiteContent['footer'];
 
 export interface Props {
     active?: ContentSection;

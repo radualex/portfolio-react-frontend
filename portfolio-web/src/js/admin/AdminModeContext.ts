@@ -1,17 +1,7 @@
 import { createContext, useContext } from 'react';
 
-// Constants
-import type { EditorTarget } from './constants';
-
-export type AdminStatus = 'checking' | 'on' | 'off';
-
-export interface AdminModeValue {
-    status: AdminStatus;
-    isAdmin: boolean;
-    enable: () => Promise<boolean>;
-    exit: () => void;
-    openEditor: (target: EditorTarget) => void;
-}
+// Types
+import type { AdminModeValue } from './types';
 
 export const AdminModeContext = createContext<AdminModeValue | undefined>(undefined);
 

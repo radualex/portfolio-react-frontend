@@ -16,10 +16,8 @@ import { fieldPatch } from '../helpers';
 import styles from '../styles.module.css';
 
 // Types
-import type { SiteContent, StatItem } from '@/store/types';
+import type { StatItem, TrackRecordContent } from '@/store/types';
 import type { TextKey } from '../types';
-
-type TrackRecordContent = SiteContent['trackRecord'];
 
 export interface Props {
     active?: ContentSection;

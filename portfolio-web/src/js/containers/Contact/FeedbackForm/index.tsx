@@ -59,14 +59,14 @@ const FeedbackForm: React.FunctionComponent<Props> = ({ ...props }) => {
         };
     };
 
-    const handleSubmit = useCallback((event: React.SyntheticEvent<HTMLFormElement>) => {
+    const submit = useCallback(async (event: React.SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (!checkAll(values, formRef.current)) {
             return;
         }
 
-        addMessage({
+        const didSend = await addMessage({
             type: MessageType.Feedback,
             name: values.name.trim() || 'Anonymous',
             email: '',
@@ -75,12 +75,22 @@ const FeedbackForm: React.FunctionComponent<Props> = ({ ...props }) => {
             detail: ''
         });
 
+        if (!didSend) {
+            toast('Could not send the feedback — please try again');
+
+            return;
+        }
+
         setIsSent(true);
-        toast('Feedback saved to the admin inbox');
+        toast('Feedback sent');
         requestAnimationFrame(() => {
             return successRef.current?.focus();
         });
     }, [addMessage, checkAll, toast, values]);
+
+    const handleSubmit = useCallback((event: React.SyntheticEvent<HTMLFormElement>) => {
+        void submit(event);
+    }, [submit]);
 
     const handleAgain = useCallback(() => {
         setValues(BLANK);

@@ -61,3 +61,9 @@ export const SECTION_LABELS: Record<ContentSection, string> = {
     contact: 'Contact page',
     footer: 'Footer'
 };
+
+export enum EditingSectionActionType {
+    Clear = 'clear',
+    ClearUnlessSite = 'clearUnlessSite',
+    Scope = 'scope'
+}

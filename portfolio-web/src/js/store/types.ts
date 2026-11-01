@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
+
 // Constants
-import type { AvailabilityState, MessageType, SectionKey } from './constants';
+import type { AvailabilityState, ConflictChoice, MessageType, SectionKey } from './constants';
 
 export interface Availability {
     state: AvailabilityState;
@@ -166,4 +168,56 @@ export interface PortfolioState {
     inbox: Message[];
     content: SiteContent;
     sections: SectionVisibility;
+}
+
+export type SyncStatus = 'error' | 'loading' | 'ready';
+
+export type SaveOutcome = 'conflict' | 'error' | 'saved';
+
+export interface ConflictState {
+    mine: SiteContent;
+    theirs: SiteContent;
+    version: string;
+}
+
+export interface Snapshot {
+    content: SiteContent;
+    version: string;
+}
+
+export interface ConflictBody {
+    current: SiteContent;
+    version: string;
+}
+
+export interface ProjectListOptions {
+    includeHidden?: boolean;
+}
+
+export interface StoreValue {
+    state: PortfolioState;
+    sync: SyncStatus;
+    canEdit: boolean;
+    conflict: ConflictState | undefined;
+    projects: (options?: ProjectListOptions) => Project[];
+    unreadCount: number;
+
+    setAvailability: (next: Partial<Availability>) => void;
+
+    saveProject: (draft: ProjectDraft | ProjectUpdate) => void;
+    removeProject: (id: string) => void;
+    moveProject: (id: string, delta: number) => void;
+
+    addMessage: (draft: MessageDraft) => Promise<boolean>;
+    updateMessage: (id: string, patch: Partial<Message>) => void;
+    removeMessage: (id: string) => void;
+    refreshInbox: () => Promise<void>;
+
+    setContent: (next: SiteContent) => Promise<SaveOutcome>;
+    resolveConflict: (choice: ConflictChoice) => Promise<void>;
+    toggleSection: (key: SectionKey) => void;
+}
+
+export interface StoreProviderProps {
+    children: ReactNode;
 }

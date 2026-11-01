@@ -1,4 +1,4 @@
-import { randomUUID, timingSafeEqual } from 'node:crypto';
+import { createHash, randomUUID, timingSafeEqual } from 'node:crypto';
 import { readFile, rename, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { join } from 'node:path';
@@ -51,6 +51,26 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
         }
     };
 
+    const readText = async (file) => {
+        try {
+            return await readFile(file, 'utf8');
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                return null;
+            }
+
+            throw error;
+        }
+    };
+
+    const versionOf = (text) => {
+        return createHash('sha256').update(text).digest('hex').slice(0, 32);
+    };
+
+    const normalizeTag = (header) => {
+        return (header ?? '').replace(/^W\//, '').replaceAll('"', '').trim();
+    };
+
     const isAuthorized = (request) => {
         if (!expectedAuth) {
             return false;
@@ -100,6 +120,11 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
         response.end(JSON.stringify(body));
     };
 
+    const sendUnauthorized = (response) => {
+        response.setHeader('WWW-Authenticate', 'Basic realm="Admin", charset="UTF-8"');
+        send(response, 401, { error: 'Authentication required' });
+    };
+
     const sendEmpty = (response, status) => {
         response.writeHead(status, { 'Cache-Control': 'no-store' });
         response.end();
@@ -113,7 +138,6 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
         return typeof value === 'object' && value !== null && !Array.isArray(value);
     };
 
-    /* Traefik appends the peer, so the last X-Forwarded-For hop is the one it saw. */
     const clientKey = (request) => {
         const forwarded = request.headers['x-forwarded-for'];
 
@@ -150,7 +174,6 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
         return false;
     };
 
-    /* Whitelist: a caller cannot set id/at/read/archived or grow the document unbounded. */
     const toMessage = (draft) => {
         const message = {};
 
@@ -178,7 +201,7 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
         response.setHeader('Access-Control-Max-Age', '86400');
     };
 
-    const parseBody = async (request, response) => {
+    const parseBody = async (request, response, accepts = isRecord) => {
         if (!isJson(request)) {
             send(response, 415, { error: 'Content-Type must be application/json' });
 
@@ -197,8 +220,8 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
             return;
         }
 
-        if (!isRecord(parsed)) {
-            send(response, 400, { error: 'Expected a JSON object' });
+        if (!accepts(parsed)) {
+            send(response, 400, { error: 'Unexpected JSON shape' });
 
             return;
         }
@@ -226,22 +249,25 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
 
             if (pathname === '/api/content') {
                 if (request.method === 'GET') {
-                    const content = await readJson(contentFile, null);
+                    const text = await readText(contentFile);
 
-                    if (content === null) {
+                    if (text === null) {
                         sendEmpty(response, 204);
 
                         return;
                     }
 
-                    send(response, 200, content);
+                    const version = versionOf(text);
+
+                    response.setHeader('ETag', `"${version}"`);
+                    send(response, 200, JSON.parse(text));
 
                     return;
                 }
 
                 if (request.method === 'PUT') {
                     if (!isAuthorized(request)) {
-                        send(response, 401, { error: 'Authentication required' });
+                        sendUnauthorized(response);
 
                         return;
                     }
@@ -252,10 +278,33 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
                         return;
                     }
 
-                    await enqueue(() => {
-                        return writeJson(contentFile, content);
+                    const recorded = await enqueue(async () => {
+                        const text = await readText(contentFile);
+                        const version = text === null ? '' : versionOf(text);
+                        const condition = normalizeTag(request.headers['if-match']);
+
+                        if (condition && condition !== version) {
+                            return {
+                                current: text === null ? null : JSON.parse(text),
+                                version
+                            };
+                        }
+
+                        const next = JSON.stringify(content);
+
+                        await writeJson(contentFile, content);
+
+                        return { version: versionOf(next) };
                     });
-                    send(response, 200, { ok: true });
+
+                    if ('current' in recorded) {
+                        send(response, 412, { current: recorded.current, version: recorded.version });
+
+                        return;
+                    }
+
+                    response.setHeader('ETag', `"${recorded.version}"`);
+                    send(response, 200, { version: recorded.version });
 
                     return;
                 }
@@ -264,12 +313,33 @@ export const createApp = ({ dataDir, credentials, origins, maxBody = MAX_BODY, r
             if (pathname === '/api/content/inbox') {
                 if (request.method === 'GET') {
                     if (!isAuthorized(request)) {
-                        send(response, 401, { error: 'Authentication required' });
+                        sendUnauthorized(response);
 
                         return;
                     }
 
                     send(response, 200, await readJson(inboxFile, []));
+
+                    return;
+                }
+
+                if (request.method === 'PUT') {
+                    if (!isAuthorized(request)) {
+                        sendUnauthorized(response);
+
+                        return;
+                    }
+
+                    const next = await parseBody(request, response, Array.isArray);
+
+                    if (!next) {
+                        return;
+                    }
+
+                    await enqueue(() => {
+                        return writeJson(inboxFile, next.slice(0, MAX_INBOX));
+                    });
+                    send(response, 200, { ok: true });
 
                     return;
                 }

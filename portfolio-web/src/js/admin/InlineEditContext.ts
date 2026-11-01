@@ -1,21 +1,7 @@
 import { createContext, useContext } from 'react';
 
-// Constants
-import type { ContentSection } from './constants';
-
-// Store
-import type { SiteContent } from '@/store/types';
-
-export type EditScope = ContentSection | 'site';
-
-export interface InlineEditValue {
-    content: SiteContent;
-    editingSection: EditScope | undefined;
-    start: (scope: EditScope) => void;
-    update: (path: string, value: string) => void;
-    save: () => void;
-    cancel: () => void;
-}
+// Types
+import type { InlineEditValue } from './types';
 
 export const InlineEditContext = createContext<InlineEditValue | undefined>(
     undefined

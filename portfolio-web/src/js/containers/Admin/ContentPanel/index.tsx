@@ -36,7 +36,7 @@ export interface Props extends Omit<React.ComponentProps<typeof Panel>, 'title' 
 }
 
 const ContentPanel: React.FunctionComponent<Props> = ({ section, title = 'Page content', onSaved, ...props }) => {
-    const { state, setContent } = useStore();
+    const { state, setContent, canEdit } = useStore();
     const toast = useToast();
     const [draft, updateDraft] = useReducer(draftReducer, state.content);
 
@@ -103,20 +103,37 @@ const ContentPanel: React.FunctionComponent<Props> = ({ section, title = 'Page c
         });
     }, []);
 
-    const handleSave = useCallback(() => {
-        setContent(draft);
-        toast('Content saved');
-        onSaved?.();
+    const handleSave = useCallback(async () => {
+        const outcome = await setContent(draft);
+
+        if (outcome === 'saved') {
+            toast('Content saved');
+            onSaved?.();
+
+            return;
+        }
+
+        toast(outcome === 'conflict'
+            ? 'Review the changes before saving'
+            : 'Could not save — the content service is unreachable');
     }, [draft, onSaved, setContent, toast]);
 
+    const handleClick = useCallback(() => {
+        void handleSave();
+    }, [handleSave]);
+
     const actions = (
-        <Button variant={ButtonVariant.Primary} size={ButtonSize.Sm} onClick={handleSave}>
+        <Button variant={ButtonVariant.Primary} size={ButtonSize.Sm} onClick={handleClick} disabled={!canEdit}>
             Save content
         </Button>
     );
 
+    const note = canEdit
+        ? 'Every string on the public pages. Save to publish.'
+        : 'Read-only until the content service answers.';
+
     return (
-        <Panel title={title} note="Every string on the public pages. Save to publish." action={actions} {...props}>
+        <Panel title={title} note={note} action={actions} {...props}>
             <HeroSection active={section} value={draft.hero} onChange={handleChangeHero} />
             <CapabilitiesSection active={section} value={draft.capabilities} onChange={handleChangeCapabilities} />
             <TrackRecordSection active={section} value={draft.trackRecord} onChange={handleChangeTrackRecord} />

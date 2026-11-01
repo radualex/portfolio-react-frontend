@@ -1,35 +1,40 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 
+// Constants
+import { EditingSectionActionType } from './constants';
+
 // Components
+import ContentConflictDialog from './ContentConflictDialog';
 import InlineEditBar from './InlineEditBar';
 import { useToast } from '@/components/Toast/ToastContext';
 import { useAdminMode } from './AdminModeContext';
-import { InlineEditContext, type EditScope, type InlineEditValue } from './InlineEditContext';
+import { InlineEditContext } from './InlineEditContext';
 import { setByPath } from './paths';
 import { readAutoEditFlag, writeAutoEditFlag } from './storage';
 
 // Store
 import { useStore } from '@/store/StoreContext';
+
+// Types
 import type { SiteContent } from '@/store/types';
+import type { EditingSectionAction, EditScope, InlineEditValue } from './types';
 
 export interface Props {
     children: ReactNode;
 }
 
-type EditingSectionAction = { type: 'clear'; } | { type: 'clearUnlessSite'; } | { type: 'scope'; scope: EditScope; };
-
 const editingSectionReducer = (current: EditScope | undefined, action: EditingSectionAction): EditScope | undefined => {
     switch (action.type) {
-        case 'clear': {
+        case EditingSectionActionType.Clear: {
             return;
         }
 
-        case 'clearUnlessSite': {
+        case EditingSectionActionType.ClearUnlessSite: {
             return current === 'site' ? current : undefined;
         }
 
-        case 'scope': {
+        case EditingSectionActionType.Scope: {
             return action.scope;
         }
         default: {
@@ -43,7 +48,7 @@ const draftReducer = (_current: SiteContent, next: SiteContent): SiteContent => 
 };
 
 const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
-    const { state, setContent } = useStore();
+    const { state, setContent, canEdit } = useStore();
     const { isAdmin } = useAdminMode();
     const toast = useToast();
     const location = useLocation();
@@ -57,14 +62,14 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
     useEffect(() => {
         if (!isAdmin) {
             dispatchEditingSection({
-                type: 'clear'
+                type: EditingSectionActionType.Clear
             });
         }
     }, [isAdmin]);
 
     useEffect(() => {
         dispatchEditingSection({
-            type: 'clearUnlessSite'
+            type: EditingSectionActionType.ClearUnlessSite
         });
     }, [location.pathname]);
 
@@ -73,24 +78,30 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
             return;
         }
 
+        if (!canEdit) {
+            toast('Editing needs a live connection to the content service');
+
+            return;
+        }
+
         const next = structuredClone(state.content);
 
         draftRef.current = next;
         dispatchDraft(next);
         dispatchEditingSection({
-            type: 'scope',
+            type: EditingSectionActionType.Scope,
             scope
         });
-    }, [isAdmin, state.content]);
+    }, [canEdit, isAdmin, state.content, toast]);
 
     useEffect(() => {
-        if (!isAdmin || !readAutoEditFlag()) {
+        if (!isAdmin || !canEdit || !readAutoEditFlag()) {
             return;
         }
 
         writeAutoEditFlag(false);
         start('site');
-    }, [isAdmin, location.pathname, start]);
+    }, [canEdit, isAdmin, location.pathname, start]);
 
     const update = useCallback((path: string, value: string) => {
         const next = setByPath(draftRef.current, path, value) as SiteContent;
@@ -99,21 +110,34 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
         dispatchDraft(next);
     }, []);
 
-    const save = useCallback(() => {
+    const save = useCallback(async () => {
         if (!editingSection) {
             return;
         }
 
-        setContent(draftRef.current);
-        toast('Section saved');
-        dispatchEditingSection({
-            type: 'clear'
-        });
+        const outcome = await setContent(draftRef.current);
+
+        if (outcome === 'saved') {
+            toast('Section saved');
+            dispatchEditingSection({
+                type: EditingSectionActionType.Clear
+            });
+
+            return;
+        }
+
+        if (outcome === 'error') {
+            toast('Could not save — the content service is unreachable');
+        }
     }, [editingSection, setContent, toast]);
+
+    const handleSave = useCallback(() => {
+        void save();
+    }, [save]);
 
     const cancel = useCallback(() => {
         dispatchEditingSection({
-            type: 'clear'
+            type: EditingSectionActionType.Clear
         });
     }, []);
 
@@ -125,15 +149,16 @@ const InlineEditProvider: React.FunctionComponent<Props> = ({ children }) => {
             editingSection,
             start,
             update,
-            save,
+            save: handleSave,
             cancel
         };
-    }, [content, editingSection, start, update, save, cancel]);
+    }, [content, editingSection, handleSave, start, update, cancel]);
 
     return (
         <InlineEditContext value={value}>
             {children}
             {editingSection && <InlineEditBar />}
+            <ContentConflictDialog />
         </InlineEditContext>
     );
 };

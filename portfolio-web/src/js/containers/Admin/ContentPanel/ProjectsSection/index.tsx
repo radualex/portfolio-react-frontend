@@ -17,10 +17,8 @@ import { fieldPatch } from '../helpers';
 import styles from '../styles.module.css';
 
 // Types
-import type { SiteContent } from '@/store/types';
+import type { ProjectsContent } from '@/store/types';
 import type { TextKey } from '../types';
-
-type ProjectsContent = SiteContent['projects'];
 
 export interface Props {
     active?: ContentSection;

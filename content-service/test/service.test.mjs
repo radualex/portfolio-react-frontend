@@ -213,3 +213,82 @@ test('OPTIONS preflight is answered without auth', async () => {
     assert.equal(response.status, 204);
     assert.equal(response.headers.get('access-control-allow-origin'), 'http://localhost:3000');
 });
+
+test('every write produces a new version and a matching ETag', async () => {
+    const document = { hero: { heading: 'v1' } };
+    const put = await fetch(`${base}/api/content`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: authorization },
+        body: JSON.stringify(document)
+    });
+
+    assert.equal(put.status, 200);
+
+    const first = (await put.json()).version;
+
+    assert.equal(put.headers.get('etag'), `"${first}"`);
+    assert.equal((await fetch(`${base}/api/content`)).headers.get('etag'), `"${first}"`);
+
+    const second = await fetch(`${base}/api/content`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: authorization, 'If-Match': `"${first}"` },
+        body: JSON.stringify({ hero: { heading: 'v2' } })
+    });
+
+    assert.equal(second.status, 200);
+    assert.notEqual((await second.json()).version, first);
+});
+
+test('PUT with a stale If-Match is rejected and leaves the document untouched', async () => {
+    const current = await fetch(`${base}/api/content`);
+    const currentBody = await current.json();
+    const currentVersion = current.headers.get('etag').replaceAll('"', '');
+
+    const response = await fetch(`${base}/api/content`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: authorization, 'If-Match': '"stale"' },
+        body: JSON.stringify({ clobbered: true })
+    });
+
+    assert.equal(response.status, 412);
+
+    const body = await response.json();
+
+    assert.deepEqual(body.current, currentBody);
+    assert.equal(body.version, currentVersion);
+    assert.deepEqual(await (await fetch(`${base}/api/content`)).json(), currentBody);
+});
+
+test('PUT /api/content/inbox replaces the array and requires auth', async () => {
+    const unauthenticated = await fetch(`${base}/api/content/inbox`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: '[]'
+    });
+
+    assert.equal(unauthenticated.status, 401);
+
+    const replacement = [{
+        id: 'kept',
+        at: '2026-01-01T00:00:00.000Z',
+        read: true,
+        archived: true,
+        type: 'enquiry',
+        name: 'A',
+        email: '',
+        subject: '',
+        body: 'b',
+        detail: ''
+    }];
+    const ok = await fetch(`${base}/api/content/inbox`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: authorization },
+        body: JSON.stringify(replacement)
+    });
+
+    assert.equal(ok.status, 200);
+
+    const list = await fetch(`${base}/api/content/inbox`, { headers: { Authorization: authorization } });
+
+    assert.deepEqual(await list.json(), replacement);
+});

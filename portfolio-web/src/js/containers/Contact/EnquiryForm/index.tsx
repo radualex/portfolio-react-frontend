@@ -60,14 +60,14 @@ const EnquiryForm: React.FunctionComponent<Props> = ({ ...props }) => {
         };
     };
 
-    const handleSubmit = useCallback((event: React.SyntheticEvent<HTMLFormElement>) => {
+    const submit = useCallback(async (event: React.SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (!checkAll(values, formRef.current)) {
             return;
         }
 
-        addMessage({
+        const didSend = await addMessage({
             type: MessageType.Enquiry,
             name: values.name.trim(),
             email: values.email.trim(),
@@ -84,13 +84,23 @@ const EnquiryForm: React.FunctionComponent<Props> = ({ ...props }) => {
                 .join(' · ')
         });
 
+        if (!didSend) {
+            toast('Could not send the enquiry — please try again');
+
+            return;
+        }
+
         setIsSent(true);
-        toast('Enquiry saved to the admin inbox');
+        toast('Enquiry sent');
 
         requestAnimationFrame(() => {
             return successRef.current?.focus();
         });
     }, [addMessage, checkAll, toast, values]);
+
+    const handleSubmit = useCallback((event: React.SyntheticEvent<HTMLFormElement>) => {
+        void submit(event);
+    }, [submit]);
 
     const handleAgain = useCallback(() => {
         setValues(BLANK);
@@ -110,8 +120,8 @@ const EnquiryForm: React.FunctionComponent<Props> = ({ ...props }) => {
     if (isSent) {
         return (
             <FormSuccess ref={successRef} label="Enquiry received" action={actions}>
-                Thanks — your brief is in. It is sitting in the admin inbox of
-                this prototype rather than being emailed anywhere.
+                Thanks — your brief is in. It is sitting in the admin inbox
+                rather than being emailed anywhere.
             </FormSuccess>
         );
     }
@@ -128,7 +138,7 @@ const EnquiryForm: React.FunctionComponent<Props> = ({ ...props }) => {
                 <TextAreaField id="eq-message" label="The brief" full placeholder="What are you building, what's blocking it, and who is already on the team?" {...getField(Key.Message)} />
             </FormGrid>
 
-            <FormActions note="Prototype — messages are stored in this browser and appear in the admin inbox.">
+            <FormActions note="Messages go straight to the admin inbox.">
                 <Button variant={ButtonVariant.Primary} type="submit">
                     Send enquiry
                 </Button>
